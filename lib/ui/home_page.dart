@@ -164,8 +164,8 @@ class HomePage extends StatelessWidget {
                                   final newTodo = Todo(
                                       description:
                                           _todoDescriptionFormController
-                                              .value.text, id: 0);
-                                  if (newTodo.description.isNotEmpty) {
+                                              .value.text);
+                                  if (newTodo.description!.isNotEmpty) {
                                     /*Create new Todo object and make sure
                                     the Todo description is not empty,
                                     because what's the point of saving empty
@@ -325,7 +325,7 @@ class HomePage extends StatelessWidget {
                     delete Todo item by ID whenever
                     the card is dismissed
                     */
-                    todoBloc.deleteTodoById(todo.id);
+                    todoBloc.deleteTodoById(todo.id!);
                   },
                   direction: _dismissDirection,
                   key: ObjectKey(todo),
@@ -363,7 +363,7 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         title: Text(
-                          todo.description,
+                          todo.description!,
                           style: TextStyle(
                               fontSize: 16.5,
                               fontFamily: 'RobotoMono',

@@ -1,7 +1,6 @@
 import 'package:flutter_to_do_app/model/todo.dart';
 import 'package:flutter_to_do_app/repository/todo_repository.dart';
 
-
 import 'dart:async';
 
 class TodoBloc {
