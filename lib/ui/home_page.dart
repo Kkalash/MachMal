@@ -114,7 +114,7 @@ class HomePage extends StatelessWidget {
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
-                        topLeft:  Radius.circular(10.0),
+                        topLeft: Radius.circular(10.0),
                         topRight: Radius.circular(10.0))),
                 child: Padding(
                   padding: const EdgeInsets.only(
@@ -235,8 +235,8 @@ class HomePage extends StatelessWidget {
                               validator: (String? value) {
                                 if (value!.isNotEmpty) {
                                   return value.contains('@')
-                                    ? 'Do not use the @ char.'
-                                    : null;
+                                      ? 'Do not use the @ char.'
+                                      : null;
                                 }
                               },
                             ),
@@ -331,7 +331,8 @@ class HomePage extends StatelessWidget {
                   key: ObjectKey(todo),
                   child: Card(
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: (Colors.grey[200])!, width: 0.5),
+                        side:
+                            BorderSide(color: (Colors.grey[200])!, width: 0.5),
                         borderRadius: BorderRadius.circular(5),
                       ),
                       color: Colors.white,
@@ -340,7 +341,7 @@ class HomePage extends StatelessWidget {
                           onTap: () {
                             //Reverse the value
                             todo.isDone = !todo.isDone;
-                          /*
+                            /*
                             Another magic.
                             This will update Todo isDone with either
                             completed or not
@@ -378,9 +379,9 @@ class HomePage extends StatelessWidget {
               },
             )
           : Center(
-          //this is used whenever there 0 Todo
-          //in the data base
-          child: noTodoMessageWidget(),
+              //this is used whenever there 0 Todo
+              //in the data base
+              child: noTodoMessageWidget(),
             );
     } else {
       return Center(
