@@ -12,9 +12,7 @@ class ToDoApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Reactive Flutter',
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        canvasColor: Colors.transparent
-      ),
+          primarySwatch: Colors.indigo, canvasColor: Colors.transparent),
       //Our only screen/page we have
       home: HomePage(title: 'My Todo List'),
     );
