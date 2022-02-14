@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_app/ui/home_page.dart';
+import 'package:flutter_to_do_app/utils/utils.dart';
 
 void main() => runApp(const ToDoApp());
 
@@ -12,7 +13,9 @@ class ToDoApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Reactive Flutter',
       theme: ThemeData(
-          primarySwatch: Colors.indigo, canvasColor: Colors.transparent),
+          //primarySwatch: Colors.indigo, //CMA
+          primarySwatch: createMaterialColor(Color(0xFF116466)),
+          canvasColor: Colors.transparent),
       //Our only screen/page we have
       home: HomePage(title: 'My Todo List'),
     );
