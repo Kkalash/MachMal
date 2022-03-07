@@ -20,14 +20,13 @@ class HomePage extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
         statusBarColor: TERTIARY_COLOR, //ganz oben der
         systemNavigationBarColor: TERTIARY_COLOR,
-        //Colors.white, //Android Bar mit zurueck/home screen etc.
+        //Android Bar mit zurueck/home screen etc.
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.dark));
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(
             child: Container(
-                //color: Colors.white,
                 color: TERTIARY_COLOR,
                 padding:
                     const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0),
@@ -35,12 +34,10 @@ class HomePage extends StatelessWidget {
                     //This is where the magic starts
                     child: getTodosWidget()))),
         bottomNavigationBar: BottomAppBar(
-          //color: Colors.white,
           color: TERTIARY_COLOR,
           child: Container(
             decoration: const BoxDecoration(
                 border: Border(
-              //top: BorderSide(color: Colors.grey, width: 0.3),
               top: BorderSide(color: SHADE_COLOR, width: 0.3),
               bottom: BorderSide(color: SHADE_COLOR, width: 0.3),
             )),
@@ -51,7 +48,6 @@ class HomePage extends StatelessWidget {
                     icon: const Icon(
                       // Burgermenue Button
                       Icons.menu,
-                      //color: Colors.indigoAccent,
                       color: PRIMARY_COLOR,
                       size: 28,
                     ),
@@ -76,7 +72,6 @@ class HomePage extends StatelessWidget {
                     icon: const Icon(
                       Icons.search,
                       size: 28,
-                      // color: Colors.indigoAccent,
                       color: PRIMARY_COLOR,
                     ),
                     onPressed: () {
@@ -100,12 +95,10 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               _showAddTodoSheet(context);
             },
-            //backgroundColor: Colors.white,
             backgroundColor: PRIMARY_COLOR,
             child: const Icon(
               Icons.add,
               size: 32,
-              //color: Colors.indigoAccent,
               color: TERTIARY_COLOR,
             ),
           ),
@@ -126,7 +119,6 @@ class HomePage extends StatelessWidget {
               child: Container(
                 height: 230,
                 decoration: const BoxDecoration(
-                    //color: Colors.white,
                     color: TERTIARY_COLOR,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10.0),
@@ -152,7 +144,6 @@ class HomePage extends StatelessWidget {
                                   hintText: 'I have to...',
                                   labelText: 'New Todo',
                                   labelStyle: TextStyle(
-                                      //color: Colors.indigoAccent,
                                       color: PRIMARY_COLOR,
                                       fontWeight: FontWeight.w500)),
                               validator: (String? value) {
@@ -168,14 +159,12 @@ class HomePage extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 5, top: 15),
                             child: CircleAvatar(
-                              //backgroundColor: Colors.indigoAccent,
                               backgroundColor: PRIMARY_COLOR,
                               radius: 18,
                               child: IconButton(
                                 icon: const Icon(
                                   Icons.save,
                                   size: 22,
-                                  //color: Colors.white,
                                   color: TERTIARY_COLOR,
                                 ),
                                 onPressed: () {
@@ -222,7 +211,6 @@ class HomePage extends StatelessWidget {
               child: Container(
                 height: 230,
                 decoration: const BoxDecoration(
-                    //color: Colors.white,
                     color: TERTIARY_COLOR,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10.0),
@@ -248,7 +236,6 @@ class HomePage extends StatelessWidget {
                                 hintText: 'Search for todo...',
                                 labelText: 'Search *',
                                 labelStyle: TextStyle(
-                                    //color: Colors.indigoAccent,
                                     color: PRIMARY_COLOR,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -264,14 +251,12 @@ class HomePage extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 5, top: 15),
                             child: CircleAvatar(
-                              //backgroundColor: Colors.indigoAccent,
                               backgroundColor: PRIMARY_COLOR,
                               radius: 18,
                               child: IconButton(
                                 icon: const Icon(
                                   Icons.search,
                                   size: 22,
-                                  //color: Colors.white,
                                   color: TERTIARY_COLOR,
                                 ),
                                 onPressed: () {
@@ -336,12 +321,10 @@ class HomePage extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Deleting",
-                          //style: TextStyle(color: Colors.white),
                           style: TextStyle(color: TERTIARY_COLOR),
                         ),
                       ),
                     ),
-                    //color: Colors.redAccent,
                     color: PRIMARY_ACCENT_COLOR,
                   ),
                   onDismissed: (direction) {
@@ -360,7 +343,6 @@ class HomePage extends StatelessWidget {
                             const BorderSide(color: (SHADE_COLOR), width: 0.5),
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      //color: Colors.white,
                       color: TERTIARY_COLOR,
                       child: ListTile(
                         leading: InkWell(
@@ -380,13 +362,11 @@ class HomePage extends StatelessWidget {
                                 ? const Icon(
                                     Icons.done,
                                     size: 26.0,
-                                    //color: Colors.indigoAccent,
                                     color: SECONDARY_COLOR,
                                   )
                                 : const Icon(
                                     Icons.check_box_outline_blank,
                                     size: 26.0,
-                                    //color: Colors.tealAccent,
                                     color: SECONDARY_COLOR,
                                   ),
                           ),

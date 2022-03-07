@@ -13,7 +13,6 @@ class ToDoApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Reactive Flutter',
       theme: ThemeData(
-          //primarySwatch: Colors.indigo, //CMA
           primarySwatch: createMaterialColor(Color(0xFF116466)),
           canvasColor: Colors.transparent),
       //Our only screen/page we have
