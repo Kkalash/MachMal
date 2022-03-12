@@ -25,3 +25,23 @@ MaterialColor createMaterialColor(Color color) {
   }
   return MaterialColor(color.value, swatch);
 }
+
+final boxDecorationStyle = BoxDecoration(
+  color: TERTIARY_COLOR,
+  borderRadius: BorderRadius.circular(10.0),
+  boxShadow: [
+    BoxShadow(
+      color: Colors.black12,
+      blurRadius: 6.0,
+      offset: Offset(0, 2),
+    ),
+  ],
+);
+
+final labelTextStyle = TextStyle(
+  color: TERTIARY_COLOR,
+  fontSize: 30.0,
+  fontWeight: FontWeight.bold,
+);
+
+final textStyle = TextStyle(color: PRIMARY_ACCENT_COLOR);
