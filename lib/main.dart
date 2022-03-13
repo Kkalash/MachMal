@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/ui/home_page.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
+import 'ui/login_screen.dart';
 
 void main() => runApp(const ToDoApp());
 
@@ -13,10 +13,9 @@ class ToDoApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Reactive Flutter',
       theme: ThemeData(
-          primarySwatch: createMaterialColor(Color(0xFF116466)),
+          primarySwatch: createMaterialColor(const Color(0xFF116466)),
           canvasColor: Colors.transparent),
-      //Our only screen/page we have
-      home: HomePage(title: 'My Todo List'),
+      home: const LoginScreen(),
     );
   }
 }

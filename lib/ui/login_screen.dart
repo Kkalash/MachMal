@@ -1,43 +1,59 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_to_do_app/ui/home_page.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
+import 'home_page.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  static const labelTextStyle = TextStyle(
+    color: tertiaryColor,
+    fontSize: 30.0,
+    fontWeight: FontWeight.bold,
+  );
+
+  final boxDecorationStyle = BoxDecoration(
+    color: tertiaryColor,
+    borderRadius: BorderRadius.circular(10.0),
+    boxShadow: const [
+      BoxShadow(
+        color: Colors.black12,
+        blurRadius: 6.0,
+        offset: Offset(0, 2),
+      ),
+    ],
+  );
+
   bool? _rememberMe = false;
 
   Widget _buildEmailTF() {
+    const textStyle = TextStyle(color: primaryAccentColor);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
+        const Text(
           'Email',
           style: labelTextStyle,
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Container(
           alignment: Alignment.centerLeft,
           decoration: boxDecorationStyle,
           height: 60.0,
-          child: TextField(
+          child: const TextField(
               keyboardType: TextInputType.emailAddress,
               style: textStyle,
               decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(Icons.email, color: PRIMARY_ACCENT_COLOR),
+                  prefixIcon: Icon(Icons.email, color: primaryAccentColor),
                   hintText: 'Enter your Email',
                   hintStyle: TextStyle(
-                    color: SHADE_COLOR,
+                    color: shadeColor,
                   ))),
         ),
       ],
@@ -48,23 +64,23 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
+        const Text(
           'Password',
           style: labelTextStyle,
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Container(
             alignment: Alignment.centerLeft,
             decoration: boxDecorationStyle,
             height: 60.0,
-            child: TextField(
+            child: const TextField(
                 obscureText: true,
                 decoration: InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.only(top: 14.0),
-                    prefixIcon: Icon(Icons.lock, color: PRIMARY_ACCENT_COLOR),
+                    prefixIcon: Icon(Icons.lock, color: primaryAccentColor),
                     hintText: 'Enter your Password',
-                    hintStyle: TextStyle(color: SHADE_COLOR)))),
+                    hintStyle: TextStyle(color: shadeColor)))),
       ],
     );
   }
@@ -74,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
         alignment: Alignment.centerRight,
         child: TextButton(
           onPressed: () => print('Forgot Password Button pressed'),
-          child: Text(
+          child: const Text(
             'Forgot Password?',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
@@ -82,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildRememberMe() {
-    return Container(
+    return SizedBox(
       height: 20.0,
       child: Row(
         children: <Widget>[
@@ -90,38 +106,40 @@ class _LoginScreenState extends State<LoginScreen> {
               data: ThemeData(unselectedWidgetColor: Colors.white),
               child: Checkbox(
                 value: _rememberMe,
-                checkColor: PRIMARY_COLOR,
-                activeColor: TERTIARY_COLOR,
+                checkColor: primaryColor,
+                activeColor: tertiaryColor,
                 onChanged: (value) {
                   setState(() {
                     _rememberMe = value;
                   });
                 },
               )),
-          Text('Remember me',
+          const Text('Remember me',
               style:
-                  TextStyle(color: TERTIARY_COLOR, fontWeight: FontWeight.bold))
+                  TextStyle(color: tertiaryColor, fontWeight: FontWeight.bold))
         ],
       ),
     );
   }
 
   Widget _buildLoginBtn() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0),
-      width: double.infinity,
-      child: RaisedButton(
+    final ButtonStyle style = ElevatedButton.styleFrom(
         elevation: 5.0,
+        padding: const EdgeInsets.all(15.0),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+        primary: tertiaryColor);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 25.0),
+      width: double.infinity,
+      child: ElevatedButton(
+        style: style,
         onPressed: () => print('Login Button Pressed'),
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: TERTIARY_COLOR,
-        child: Text(
+        child: const Text(
           'LOGIN',
           style: TextStyle(
-            color: PRIMARY_ACCENT_COLOR,
+            color: primaryAccentColor,
             letterSpacing: 1.5,
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
@@ -135,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return GestureDetector(
       onTap: () => print('Sign Up Button Pressed'),
       child: RichText(
-        text: TextSpan(
+        text: const TextSpan(
           children: [
             TextSpan(
               text: 'Don\'t have an Account? ',
@@ -148,15 +166,50 @@ class _LoginScreenState extends State<LoginScreen> {
             TextSpan(
               text: 'Sign Up',
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
+                  color: Colors.white,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildOrText() {
+    return Container(
+      alignment: Alignment.bottomCenter,
+      child: const Text(
+        'Or',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18.0,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForwardWithoutLoginBtn() {
+    return Container(
+        alignment: Alignment.topCenter,
+        child: TextButton(
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => HomePage(
+                    title: 'My ToDo List',
+                  ))),
+          child: const Text(
+            'Continue without Login',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ));
   }
 
   @override
@@ -167,15 +220,15 @@ class _LoginScreenState extends State<LoginScreen> {
           Container(
             height: double.infinity,
             width: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                  PRIMARY_COLOR,
-                  PRIMARY_COLOR,
-                  PRIMARY_ACCENT_COLOR,
-                  PRIMARY_ACCENT_COLOR
+                  primaryColor,
+                  primaryColor,
+                  primaryAccentColor,
+                  primaryAccentColor
                 ],
                     stops: [
                   0.1,
@@ -184,33 +237,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   0.9
                 ])),
           ),
-          Container(
+          SizedBox(
             height: double.infinity,
             child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(
                 horizontal: 40.0,
                 vertical: 120.0,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
+                  const Text(
                     'Sign in',
                     style: TextStyle(
-                      color: TERTIARY_COLOR,
+                      color: tertiaryColor,
                       fontFamily: 'OpenSans',
                       fontSize: 30.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 30.0),
+                  const SizedBox(height: 30.0),
                   _buildEmailTF(),
-                  SizedBox(height: 30.0),
+                  const SizedBox(height: 30.0),
                   _buildPasswordTF(),
                   _buildForgotPwBtn(),
                   _buildRememberMe(),
-                  _buildLoginBtn()
+                  _buildLoginBtn(),
+                  _buildSignupBtn(),
+                  _buildOrText(),
+                  _buildForwardWithoutLoginBtn()
                 ],
               ),
             ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-const Color PRIMARY_COLOR = Color(0xFF5C2018);
-const Color PRIMARY_ACCENT_COLOR = Color(0xFFBC4639);
-const Color SECONDARY_COLOR = Color(0xFFBC4639);
-const Color SHADE_COLOR = Color(0xFFD4A59A);
-const Color TERTIARY_COLOR = Color.fromARGB(255, 248, 234, 231);
+const Color primaryColor = Color(0xFF5C2018);
+const Color primaryAccentColor = Color(0xFFBC4639);
+const Color secondaryColor = Color(0xFFBC4639);
+const Color shadeColor = Color(0xFFD4A59A);
+const Color tertiaryColor = Color.fromARGB(255, 248, 234, 231);
 
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
@@ -25,23 +25,3 @@ MaterialColor createMaterialColor(Color color) {
   }
   return MaterialColor(color.value, swatch);
 }
-
-final boxDecorationStyle = BoxDecoration(
-  color: TERTIARY_COLOR,
-  borderRadius: BorderRadius.circular(10.0),
-  boxShadow: [
-    BoxShadow(
-      color: Colors.black12,
-      blurRadius: 6.0,
-      offset: Offset(0, 2),
-    ),
-  ],
-);
-
-final labelTextStyle = TextStyle(
-  color: TERTIARY_COLOR,
-  fontSize: 30.0,
-  fontWeight: FontWeight.bold,
-);
-
-final textStyle = TextStyle(color: PRIMARY_ACCENT_COLOR);
