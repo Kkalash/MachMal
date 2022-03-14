@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter_to_do_app/database/database.dart';
+import 'package:flutter_to_do_app/database/database_todo.dart';
 import 'package:flutter_to_do_app/model/todo.dart';
 
 class TodoDao {
@@ -23,7 +23,7 @@ class TodoDao {
         result = await db.query(todoTABLE,
             columns: columns,
             where: 'description LIKE ?',
-            whereArgs: ["%$query%"]);
+            whereArgs: ['%$query%']);
       }
     } else {
       result = await db.query(todoTABLE, columns: columns);
@@ -32,6 +32,7 @@ class TodoDao {
     List<Todo> todos = result.isNotEmpty
         ? result.map((item) => Todo.fromDatabaseJson(item)).toList()
         : [];
+
     return todos;
   }
 
@@ -40,7 +41,7 @@ class TodoDao {
     final db = await dbProvider.database;
 
     var result = await db.update(todoTABLE, todo.toDatabaseJson(),
-        where: "id = ?", whereArgs: [todo.id]);
+        where: 'id = ?', whereArgs: [todo.id]);
 
     return result;
   }

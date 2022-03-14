@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_to_do_app/bloc/category_bloc.dart';
 import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
 import 'package:flutter_to_do_app/model/todo.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/ui/sidenav.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
 
   //We load our Todo BLoC that is used to get
   //the stream of Todo for StreamBuilder
+  final CategoryBloc categoryBloc = CategoryBloc();
   final TodoBloc todoBloc = TodoBloc();
   final String title;
 
   //Allows Todo card to be dismissable horizontally
   final DismissDirection _dismissDirection = DismissDirection.horizontal;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +29,7 @@ class HomePage extends StatelessWidget {
         statusBarBrightness: Brightness.dark));
     return Scaffold(
         resizeToAvoidBottomInset: false,
+        key: _scaffoldKey,
         body: SafeArea(
             child: Container(
                 color: tertiaryColor,
@@ -33,6 +38,7 @@ class HomePage extends StatelessWidget {
                 child: Container(
                     //This is where the magic starts
                     child: getTodosWidget()))),
+        drawer: Sidenav(categoryBloc),
         bottomNavigationBar: BottomAppBar(
           color: tertiaryColor,
           child: Container(
@@ -53,12 +59,12 @@ class HomePage extends StatelessWidget {
                     ),
                     onPressed: () {
                       //just re-pull UI for testing purposes
-                      todoBloc.getTodos();
+                      _scaffoldKey.currentState?.openDrawer();
                     }),
                 const Expanded(
                   //Text neben Burgermenu
                   child: Text(
-                    "Todo",
+                    'Todo',
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -169,9 +175,9 @@ class HomePage extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   final newTodo = Todo(
-                                      description:
-                                          _todoDescriptionFormController
-                                              .value.text);
+                                    description: _todoDescriptionFormController
+                                        .value.text,
+                                  );
                                   if (newTodo.description!.isNotEmpty) {
                                     /*Create new Todo object and make sure
                                     the Todo description is not empty,
@@ -320,7 +326,7 @@ class HomePage extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Deleting",
+                          'Deleting',
                           style: TextStyle(color: tertiaryColor),
                         ),
                       ),
@@ -411,7 +417,7 @@ class HomePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: const <Widget>[
           CircularProgressIndicator(),
-          Text("Loading...",
+          Text('Loading...',
               style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500))
         ],
       ),
@@ -420,7 +426,7 @@ class HomePage extends StatelessWidget {
 
   Widget noTodoMessageWidget() {
     return const Text(
-      "Start adding Todo...",
+      'Start adding Todo...',
       style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
     );
   }
@@ -430,5 +436,6 @@ class HomePage extends StatelessWidget {
     to avoid memory leaks
     */
     todoBloc.dispose();
+    categoryBloc.dispose();
   }
 }
