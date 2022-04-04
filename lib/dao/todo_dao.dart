@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter_to_do_app/database/database_todo.dart';
+import 'package:flutter_to_do_app/database/database.dart';
 import 'package:flutter_to_do_app/model/todo.dart';
 
 class TodoDao {

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_to_do_app/bloc/category_bloc.dart';
+import 'package:flutter_to_do_app/dao/category_dao.dart';
+import 'package:flutter_to_do_app/model/category.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
 import 'home_page.dart';
 
@@ -198,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: TextButton(
           onPressed: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomePage(
-                    title: 'My ToDo List',
+                    currentCategory: getFirstCategory(),
                   ))),
           child: const Text(
             'Continue without Login',
@@ -210,6 +213,16 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ));
+  }
+
+  Category getFirstCategory() {
+    var snapshot;
+    var categories;
+    snapshot.data.documents.map<List<Category>>((items) {
+      categories = items;
+      return categories;
+    });
+    return categories[0];
   }
 
   @override

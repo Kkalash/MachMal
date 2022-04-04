@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_to_do_app/bloc/category_bloc.dart';
 import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
+import 'package:flutter_to_do_app/model/category.dart';
 import 'package:flutter_to_do_app/model/todo.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/ui/sidenav.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key, required this.title}) : super(key: key);
+  HomePage({Key? key, required this.currentCategory}) : super(key: key);
 
-  //We load our Todo BLoC that is used to get
-  //the stream of Todo for StreamBuilder
   final CategoryBloc categoryBloc = CategoryBloc();
   final TodoBloc todoBloc = TodoBloc();
-  final String title;
+  final Category currentCategory;
 
   //Allows Todo card to be dismissable horizontally
   final DismissDirection _dismissDirection = DismissDirection.horizontal;
@@ -61,11 +60,11 @@ class HomePage extends StatelessWidget {
                       //just re-pull UI for testing purposes
                       _scaffoldKey.currentState?.openDrawer();
                     }),
-                const Expanded(
+                Expanded(
                   //Text neben Burgermenu
                   child: Text(
-                    'Todo',
-                    style: TextStyle(
+                    currentCategory.description!,
+                    style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
                         fontFamily: 'RobotoMono',
@@ -175,15 +174,16 @@ class HomePage extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   final newTodo = Todo(
-                                    description: _todoDescriptionFormController
-                                        .value.text,
-                                  );
+                                      description:
+                                          _todoDescriptionFormController
+                                              .value.text);
                                   if (newTodo.description!.isNotEmpty) {
                                     /*Create new Todo object and make sure
                                     the Todo description is not empty,
                                     because what's the point of saving empty
                                     Todo
                                     */
+                                    newTodo.categoryId = currentCategory.id;
                                     todoBloc.addTodo(newTodo);
 
                                     //dismisses the bottomsheet

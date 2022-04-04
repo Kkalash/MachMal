@@ -137,7 +137,7 @@ class Sidenav extends Drawer {
                       context,
                       MaterialPageRoute(
                           builder: (context) => HomePage(
-                                title: 'My Todo List',
+                                currentCategory: category,
                               ))),
                 );
 

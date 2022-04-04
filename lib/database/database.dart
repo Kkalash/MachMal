@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+const categoryTABLE = 'Category';
 const todoTABLE = 'Todo';
 
 class DatabaseProvider {
@@ -20,17 +21,17 @@ class DatabaseProvider {
   createDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     //"ReactiveTodo.db is our database instance name
-    String path = join(documentsDirectory.path, 'ReactiveTodo.db');
+    String path = join(documentsDirectory.path, 'ReactiveDB.db');
 
-    if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
-      // Load database from asset and copy
-      ByteData data = await rootBundle.load(join('assets', 'database.db'));
-      List<int> bytes =
-          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    // if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
+    //   // Load database from asset and copy
+    //   ByteData data = await rootBundle.load(join('assets', 'database.db'));
+    //   List<int> bytes =
+    //       data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
-      // Save copied asset to documents
-      await File(path).writeAsBytes(bytes);
-    }
+    //   // Save copied asset to documents
+    //   await File(path).writeAsBytes(bytes);
+    // }
 
     var database = await openDatabase(path,
         version: 1, onCreate: initDB, onUpgrade: onUpgrade);
@@ -42,7 +43,7 @@ class DatabaseProvider {
     if (newVersion > oldVersion) {}
   }
 
-  void initDB(Database database, int version) async {
+  void toDoTableAsync(Database database) async {
     await database.execute('CREATE TABLE $todoTABLE ('
         'id INTEGER UNIQUE PRIMARY KEY, '
         'description TEXT, '
@@ -52,5 +53,17 @@ class DatabaseProvider {
         'is_done INTEGER, '
         'category_id INTEGER '
         ')');
+  }
+
+  void categoryTableAsync(Database database) async {
+    await database.execute('CREATE TABLE $categoryTABLE ('
+        'id INTEGER PRIMARY KEY, '
+        'description TEXT'
+        ')');
+  }
+
+  void initDB(Database database, int version) {
+    toDoTableAsync(database);
+    categoryTableAsync(database);
   }
 }
