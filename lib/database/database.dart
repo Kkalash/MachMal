@@ -23,16 +23,6 @@ class DatabaseProvider {
     //"ReactiveTodo.db is our database instance name
     String path = join(documentsDirectory.path, 'ReactiveDB.db');
 
-    // if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
-    //   // Load database from asset and copy
-    //   ByteData data = await rootBundle.load(join('assets', 'database.db'));
-    //   List<int> bytes =
-    //       data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-
-    //   // Save copied asset to documents
-    //   await File(path).writeAsBytes(bytes);
-    // }
-
     var database = await openDatabase(path,
         version: 1, onCreate: initDB, onUpgrade: onUpgrade);
     return database;
