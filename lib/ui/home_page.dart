@@ -8,15 +8,16 @@ import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/ui/sidenav.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key, required this.currentCategory}) : super(key: key);
-
-  final CategoryBloc categoryBloc = CategoryBloc();
+  final CategoryBloc categoryBloc;
   final TodoBloc todoBloc = TodoBloc();
   final Category currentCategory;
 
   //Allows Todo card to be dismissable horizontally
   final DismissDirection _dismissDirection = DismissDirection.horizontal;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  HomePage(this.categoryBloc, {Key? key, required this.currentCategory})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class HomePage extends StatelessWidget {
                 Expanded(
                   //Text neben Burgermenu
                   child: Text(
-                    currentCategory.description!,
+                    currentCategory.description,
                     style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -174,16 +175,17 @@ class HomePage extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   final newTodo = Todo(
+                                      categoryId: currentCategory.id!,
                                       description:
                                           _todoDescriptionFormController
-                                              .value.text);
-                                  if (newTodo.description!.isNotEmpty) {
+                                              .value.text
+                                              .trim());
+                                  if (newTodo.description.isNotEmpty) {
                                     /*Create new Todo object and make sure
                                     the Todo description is not empty,
                                     because what's the point of saving empty
                                     Todo
                                     */
-                                    newTodo.categoryId = currentCategory.id;
                                     todoBloc.addTodo(newTodo);
 
                                     //dismisses the bottomsheet
@@ -270,10 +272,10 @@ class HomePage extends StatelessWidget {
                                   that contains similar string
                                   in the textform
                                   */
-                                  todoBloc.getTodos(
-                                      query:
-                                          _todoSearchDescriptionFormController
-                                              .value.text);
+                                  todoBloc.filterTodos(
+                                      currentCategory.id!,
+                                      _todoSearchDescriptionFormController
+                                          .value.text);
                                   //dismisses the bottomsheet
                                   Navigator.pop(context);
                                 },
@@ -378,7 +380,7 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         title: Text(
-                          todo.description!,
+                          todo.description,
                           style: TextStyle(
                               fontSize: 16.5,
                               fontFamily: 'RobotoMono',
@@ -411,7 +413,7 @@ class HomePage extends StatelessWidget {
 
   Widget loadingData() {
     //pull todos again
-    todoBloc.getTodos();
+    todoBloc.getTodosByCategoryId(categoryId: currentCategory.id!);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

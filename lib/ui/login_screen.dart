@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_app/bloc/category_bloc.dart';
-import 'package:flutter_to_do_app/dao/category_dao.dart';
-import 'package:flutter_to_do_app/model/category.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
-import 'home_page.dart';
+import 'sidenav.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -13,6 +11,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final CategoryBloc categoryBloc = CategoryBloc();
+
   static const labelTextStyle = TextStyle(
     color: tertiaryColor,
     fontSize: 30.0,
@@ -154,7 +154,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildSignupBtn() {
     return GestureDetector(
-      onTap: () => print('Sign Up Button Pressed'),
       child: RichText(
         text: const TextSpan(
           children: [
@@ -199,10 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
         alignment: Alignment.topCenter,
         child: TextButton(
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HomePage(
-                    currentCategory: getFirstCategory(),
-                  ))),
+          onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => Sidenav(categoryBloc))),
           child: const Text(
             'Continue without Login',
             textAlign: TextAlign.center,
@@ -213,16 +210,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ));
-  }
-
-  Category getFirstCategory() {
-    var snapshot;
-    var categories;
-    snapshot.data.documents.map<List<Category>>((items) {
-      categories = items;
-      return categories;
-    });
-    return categories[0];
   }
 
   @override

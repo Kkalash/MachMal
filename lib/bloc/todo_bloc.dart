@@ -15,29 +15,32 @@ class TodoBloc {
 
   get todos => _todoController.stream;
 
-  TodoBloc() {
-    getTodos();
-  }
+  TodoBloc();
 
-  getTodos({String? query}) async {
+  getTodosByCategoryId({required int categoryId}) async {
     //sink is a way of adding data reactively to the stream
     //by registering a new event
-    _todoController.sink.add(await _todoRepository.getAllTodos(query: query));
+    _todoController.sink.add(
+        await _todoRepository.getAllTodosByCategoryId(categoryId: categoryId));
+  }
+
+  filterTodos(int categoryId, String description) async {
+    await _todoRepository.filterTodosByDescription(
+        categoryId: categoryId, description: description);
   }
 
   addTodo(Todo todo) async {
     await _todoRepository.insertTodo(todo);
-    getTodos();
+    getTodosByCategoryId(categoryId: todo.categoryId);
   }
 
   updateTodo(Todo todo) async {
     await _todoRepository.updateTodo(todo);
-    getTodos();
+    getTodosByCategoryId(categoryId: todo.categoryId);
   }
 
   deleteTodoById(int id) async {
     _todoRepository.deleteTodoById(id);
-    getTodos();
   }
 
   dispose() {

@@ -115,7 +115,7 @@ class Sidenav extends Drawer {
                 Category category = snapshot.data![itemPostion];
                 final Widget listTitle = ListTile(
                   title: Text(
-                    category.description!,
+                    category.description,
                     style: const TextStyle(
                       fontSize: 20.5,
                       fontFamily: 'RobotoMono',
@@ -137,6 +137,7 @@ class Sidenav extends Drawer {
                       context,
                       MaterialPageRoute(
                           builder: (context) => HomePage(
+                                categoryBloc,
                                 currentCategory: category,
                               ))),
                 );
@@ -240,8 +241,9 @@ class Sidenav extends Drawer {
                                   final newCategory = Category(
                                       description:
                                           _categoryDescriptionFormController
-                                              .value.text);
-                                  if (newCategory.description!.isNotEmpty) {
+                                              .value.text
+                                              .trim());
+                                  if (newCategory.description.isNotEmpty) {
                                     /*Create new Category object and make sure
                                     the Category description is not empty,
                                     because what's the point of saving empty
