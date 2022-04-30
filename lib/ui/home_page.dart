@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_to_do_app/bloc/category_bloc.dart';
 import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
+import 'package:flutter_to_do_app/model/category.dart';
 import 'package:flutter_to_do_app/model/todo.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/ui/sidenav.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key, required this.title}) : super(key: key);
-
-  //We load our Todo BLoC that is used to get
-  //the stream of Todo for StreamBuilder
+  final CategoryBloc categoryBloc;
   final TodoBloc todoBloc = TodoBloc();
-  final String title;
+  final Category currentCategory;
 
   //Allows Todo card to be dismissable horizontally
   final DismissDirection _dismissDirection = DismissDirection.horizontal;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  HomePage(this.categoryBloc, {Key? key, required this.currentCategory})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +29,7 @@ class HomePage extends StatelessWidget {
         statusBarBrightness: Brightness.dark));
     return Scaffold(
         resizeToAvoidBottomInset: false,
+        key: _scaffoldKey,
         body: SafeArea(
             child: Container(
                 color: tertiaryColor,
@@ -33,6 +38,7 @@ class HomePage extends StatelessWidget {
                 child: Container(
                     //This is where the magic starts
                     child: getTodosWidget()))),
+        drawer: Sidenav(categoryBloc),
         bottomNavigationBar: BottomAppBar(
           color: tertiaryColor,
           child: Container(
@@ -53,13 +59,13 @@ class HomePage extends StatelessWidget {
                     ),
                     onPressed: () {
                       //just re-pull UI for testing purposes
-                      todoBloc.getTodos();
+                      _scaffoldKey.currentState?.openDrawer();
                     }),
-                const Expanded(
+                Expanded(
                   //Text neben Burgermenu
                   child: Text(
-                    "Todo",
-                    style: TextStyle(
+                    currentCategory.description,
+                    style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
                         fontFamily: 'RobotoMono',
@@ -169,10 +175,12 @@ class HomePage extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   final newTodo = Todo(
+                                      categoryId: currentCategory.id!,
                                       description:
                                           _todoDescriptionFormController
-                                              .value.text);
-                                  if (newTodo.description!.isNotEmpty) {
+                                              .value.text
+                                              .trim());
+                                  if (newTodo.description.isNotEmpty) {
                                     /*Create new Todo object and make sure
                                     the Todo description is not empty,
                                     because what's the point of saving empty
@@ -264,10 +272,10 @@ class HomePage extends StatelessWidget {
                                   that contains similar string
                                   in the textform
                                   */
-                                  todoBloc.getTodos(
-                                      query:
-                                          _todoSearchDescriptionFormController
-                                              .value.text);
+                                  todoBloc.filterTodos(
+                                      currentCategory.id!,
+                                      _todoSearchDescriptionFormController
+                                          .value.text);
                                   //dismisses the bottomsheet
                                   Navigator.pop(context);
                                 },
@@ -320,7 +328,7 @@ class HomePage extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Deleting",
+                          'Deleting',
                           style: TextStyle(color: tertiaryColor),
                         ),
                       ),
@@ -372,7 +380,7 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         title: Text(
-                          todo.description!,
+                          todo.description,
                           style: TextStyle(
                               fontSize: 16.5,
                               fontFamily: 'RobotoMono',
@@ -405,13 +413,13 @@ class HomePage extends StatelessWidget {
 
   Widget loadingData() {
     //pull todos again
-    todoBloc.getTodos();
+    todoBloc.getTodosByCategoryId(categoryId: currentCategory.id!);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const <Widget>[
           CircularProgressIndicator(),
-          Text("Loading...",
+          Text('Loading...',
               style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500))
         ],
       ),
@@ -420,7 +428,7 @@ class HomePage extends StatelessWidget {
 
   Widget noTodoMessageWidget() {
     return const Text(
-      "Start adding Todo...",
+      'Start adding Todo...',
       style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
     );
   }
@@ -430,5 +438,6 @@ class HomePage extends StatelessWidget {
     to avoid memory leaks
     */
     todoBloc.dispose();
+    categoryBloc.dispose();
   }
 }

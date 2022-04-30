@@ -4,11 +4,13 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+const categoryTABLE = 'Category';
 const todoTABLE = 'Todo';
+
 class DatabaseProvider {
   static final DatabaseProvider dbProvider = DatabaseProvider();
   Database? _database;
-  
+
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await createDatabase();
@@ -18,7 +20,8 @@ class DatabaseProvider {
   createDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     //"ReactiveTodo.db is our database instance name
-    String path = join(documentsDirectory.path, "ReactiveTodo.db");
+    String path = join(documentsDirectory.path, 'ReactiveDB.db');
+
     var database = await openDatabase(path,
         version: 1, onCreate: initDB, onUpgrade: onUpgrade);
     return database;
@@ -29,14 +32,27 @@ class DatabaseProvider {
     if (newVersion > oldVersion) {}
   }
 
-  void initDB(Database database, int version) async {
-    await database.execute("CREATE TABLE $todoTABLE ("
-        "id INTEGER PRIMARY KEY, "
-        "description TEXT, "
+  void toDoTableAsync(Database database) async {
+    await database.execute('CREATE TABLE $todoTABLE ('
+        'id INTEGER UNIQUE PRIMARY KEY, '
+        'description TEXT, '
         /*SQLITE doesn't have boolean type
         so we store isDone as integer where 0 is false
         and 1 is true*/
-        "is_done INTEGER "
-        ")");
+        'is_done INTEGER, '
+        'category_id INTEGER '
+        ')');
+  }
+
+  void categoryTableAsync(Database database) async {
+    await database.execute('CREATE TABLE $categoryTABLE ('
+        'id INTEGER PRIMARY KEY, '
+        'description TEXT'
+        ')');
+  }
+
+  void initDB(Database database, int version) {
+    toDoTableAsync(database);
+    categoryTableAsync(database);
   }
 }

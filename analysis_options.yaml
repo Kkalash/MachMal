@@ -26,6 +26,7 @@ linter:
     prefer_single_quotes: true
     avoid_empty_else: false
     unnecessary_brace_in_string_interps: true
+    not_initialized_non_nullable_instance_field: false
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

@@ -12,27 +12,30 @@ class TodoDao {
     return result;
   }
 
-  //Get All Todo items
-  //Searches if query string was passed
-  Future<List<Todo>> getTodos({List<String>? columns, String? query}) async {
+  //Get All Todo items by Category-ID
+  Future<List<Todo>> getTodosByCategoryId(
+      {List<String>? columns, required int categoryId}) async {
     final db = await dbProvider.database;
 
     List<Map<String, dynamic>> result = [];
-    if (query != null) {
-      if (query.isNotEmpty) {
-        result = await db.query(todoTABLE,
-            columns: columns,
-            where: 'description LIKE ?',
-            whereArgs: ["%$query%"]);
-      }
-    } else {
-      result = await db.query(todoTABLE, columns: columns);
-    }
+
+    result = await db.query(todoTABLE,
+        columns: columns, where: 'category_id = ?', whereArgs: [categoryId]);
 
     List<Todo> todos = result.isNotEmpty
         ? result.map((item) => Todo.fromDatabaseJson(item)).toList()
         : [];
+
     return todos;
+  }
+
+  Future<List<Todo>> filterTodosByDescription(
+      int categoryid, String description) async {
+    List<Todo> result = (await getTodosByCategoryId(categoryId: categoryid))
+        .where((element) => element.description.contains(description))
+        .toList();
+
+    return result;
   }
 
   //Update Todo record
@@ -40,7 +43,7 @@ class TodoDao {
     final db = await dbProvider.database;
 
     var result = await db.update(todoTABLE, todo.toDatabaseJson(),
-        where: "id = ?", whereArgs: [todo.id]);
+        where: 'id = ?', whereArgs: [todo.id]);
 
     return result;
   }
