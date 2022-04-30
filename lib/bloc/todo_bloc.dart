@@ -25,8 +25,8 @@ class TodoBloc {
   }
 
   filterTodos(int categoryId, String description) async {
-    await _todoRepository.filterTodosByDescription(
-        categoryId: categoryId, description: description);
+    _todoController.sink.add(await _todoRepository.filterTodosByDescription(
+        categoryId: categoryId, description: description));
   }
 
   addTodo(Todo todo) async {

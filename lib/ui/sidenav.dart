@@ -125,6 +125,11 @@ class Sidenav extends Drawer {
                   trailing: ElevatedButton(
                     onPressed: () {
                       categoryBloc.deleteCategoryById(category.id!);
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(
+                                categoryBloc,
+                                currentCategory: category,
+                              ));
                     },
                     child: const Icon(Icons.delete, color: primaryColor),
                     style: ElevatedButton.styleFrom(

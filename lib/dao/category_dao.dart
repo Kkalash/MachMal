@@ -48,6 +48,9 @@ class CategoryDao {
     var result =
         await db.delete(categoryTABLE, where: 'id = ?', whereArgs: [id]);
 
+    result =
+        await db.delete(todoTABLE, where: 'category_id = ?', whereArgs: [id]);
+
     return result;
   }
 }

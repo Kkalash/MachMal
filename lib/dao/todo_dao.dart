@@ -31,9 +31,11 @@ class TodoDao {
 
   Future<List<Todo>> filterTodosByDescription(
       int categoryid, String description) async {
-    List<Todo> todos = await getTodosByCategoryId(categoryId: categoryid);
-    return todos.map((e) => e.description.contains(description))
-        as Future<List<Todo>>;
+    List<Todo> result = (await getTodosByCategoryId(categoryId: categoryid))
+        .where((element) => element.description.contains(description))
+        .toList();
+
+    return result;
   }
 
   //Update Todo record
