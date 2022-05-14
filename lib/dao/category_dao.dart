@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_to_do_app/database/database.dart';
-import 'package:flutter_to_do_app/model/category.dart';
+import 'package:flutter_to_do_app/models/category.dart';
 
 class CategoryDao {
   final dbprovider = DatabaseProvider.dbProvider;

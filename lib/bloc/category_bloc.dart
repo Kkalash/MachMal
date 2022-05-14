@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_to_do_app/model/category.dart';
+import 'package:flutter_to_do_app/models/category.dart';
 import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class CategoryBloc {

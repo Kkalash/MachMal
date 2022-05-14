@@ -1,5 +1,5 @@
 import 'package:flutter_to_do_app/dao/category_dao.dart';
-import 'package:flutter_to_do_app/model/category.dart';
+import 'package:flutter_to_do_app/models/category.dart';
 
 class CategoryRepository {
   final categoryDao = CategoryDao();

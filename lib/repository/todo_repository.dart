@@ -1,5 +1,5 @@
 import 'package:flutter_to_do_app/dao/todo_dao.dart';
-import 'package:flutter_to_do_app/model/todo.dart';
+import 'package:flutter_to_do_app/models/todo.dart';
 
 class TodoRepository {
   final todoDao = TodoDao();
