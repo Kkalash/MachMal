@@ -2,5 +2,6 @@
   "editor.formatOnSave": true,
   "dart.flutterCreateAndroidLanguage": "java",
   "dart.flutterShowEmulators": "always",
-  "dart.lineLength": 80
+  "dart.lineLength": 80,
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
