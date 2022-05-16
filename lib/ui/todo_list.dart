@@ -7,6 +7,7 @@ import 'package:flutter_to_do_app/models/todo.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/ui/sidenav.dart';
 import 'package:flutter_to_do_app/widgets/add_todo.dart';
+import 'package:flutter_to_do_app/widgets/delete_filter.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
 import 'package:flutter_to_do_app/widgets/search_todo.dart';
 
@@ -77,11 +78,13 @@ class TodoList extends StatelessWidget {
                   ),
                 ),
                 Wrap(children: <Widget>[
+                  DeleteFilter(
+                      todoBloc: todoBloc, categoryId: currentCategory.id!),
                   SearchTodo(
                       todoBloc: todoBloc, categoryId: currentCategory.id!),
                   const Padding(
                     padding: EdgeInsets.only(right: 5),
-                  )
+                  ),
                 ])
               ],
             ),
