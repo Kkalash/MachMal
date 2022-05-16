@@ -1,22 +1,20 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/authentification/auth.dart';
 import 'package:flutter_to_do_app/bloc/category_bloc.dart';
-import 'package:flutter_to_do_app/ui/sign_up_screen.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:provider/provider.dart';
-import 'forgot_pw_screen.dart';
+import '../authentification/auth.dart';
 import 'sidenav.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final CategoryBloc categoryBloc = CategoryBloc();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -46,8 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     ],
   );
-
-  bool? _rememberMe = false;
 
   Widget _buildEmailTF() {
     const textStyle = TextStyle(color: primaryAccentColor);
@@ -106,45 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildForgotPwBtn() {
-    return Container(
-        alignment: Alignment.centerRight,
-        child: TextButton(
-          onPressed: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => ForgotPWScreen())),
-          child: const Text(
-            'Forgot Password?',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ));
-  }
-
-  Widget _buildRememberMe() {
-    return SizedBox(
-      height: 20.0,
-      child: Row(
-        children: <Widget>[
-          Theme(
-              data: ThemeData(unselectedWidgetColor: Colors.white),
-              child: Checkbox(
-                value: _rememberMe,
-                checkColor: primaryColor,
-                activeColor: tertiaryColor,
-                onChanged: (value) {
-                  setState(() {
-                    _rememberMe = value;
-                  });
-                },
-              )),
-          const Text('Remember me',
-              style:
-                  TextStyle(color: tertiaryColor, fontWeight: FontWeight.bold))
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoginBtn() {
+  Widget _buildSignUpBtn() {
     final ButtonStyle style = ElevatedButton.styleFrom(
         elevation: 5.0,
         padding: const EdgeInsets.all(15.0),
@@ -158,16 +116,12 @@ class _LoginScreenState extends State<LoginScreen> {
       child: ElevatedButton(
         style: style,
         onPressed: () {
-          Future<bool> test = context.read<AuthenticationService>().logIn(
+          context.read<AuthenticationService>().signUp(
               email: emailController.text.trim(),
               password: passwordController.text.trim());
-          if (test.asStream() == true) {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => Sidenav(categoryBloc)));
-          }
         },
         child: const Text(
-          'LOGIN',
+          'SIGN UP',
           style: TextStyle(
             color: primaryAccentColor,
             letterSpacing: 1.5,
@@ -177,69 +131,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  Widget _buildSignupBtn() {
-    return GestureDetector(
-      child: RichText(
-        text: TextSpan(
-          children: [
-            const TextSpan(
-              text: 'Don\'t have an Account? ',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            TextSpan(
-              text: 'Sign Up',
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SignUpScreen())),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOrText() {
-    return Container(
-      alignment: Alignment.bottomCenter,
-      child: const Text(
-        'Or',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18.0,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildForwardWithoutLoginBtn() {
-    return Container(
-        alignment: Alignment.topCenter,
-        child: TextButton(
-          onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => Sidenav(categoryBloc))),
-          child: const Text(
-            'Continue without Login',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ));
   }
 
   @override
@@ -279,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Text(
-                    'Sign in',
+                    'Sign up',
                     style: TextStyle(
                       color: tertiaryColor,
                       fontFamily: 'OpenSans',
@@ -291,24 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   _buildEmailTF(),
                   const SizedBox(height: 30.0),
                   _buildPasswordTF(),
-                  _buildForgotPwBtn(),
-                  _buildRememberMe(),
-                  _buildLoginBtn(),
-                  _buildSignupBtn(),
-                  _buildOrText(),
-                  _buildForwardWithoutLoginBtn(),
-                  // Scaffold(
-                  //   body: StreamBuilder<User?>(
-                  //     stream: FirebaseAuth.instance.authStateChanges(),
-                  //     builder: (context, snapshot) {
-                  //       if (snapshot.hasData) {
-                  //         return Sidenav(categoryBloc);
-                  //       } else {
-                  //         return const LoginScreen();
-                  //       }
-                  //     },
-                  //   ),
-                  // )
+                  _buildSignUpBtn()
                 ],
               ),
             ),
