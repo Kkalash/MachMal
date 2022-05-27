@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:provider/provider.dart';
-import '../authentification/auth.dart';
+import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/widgets/toast.dart';
+import 'package:flutter_to_do_app/enums/toast_type.enum.dart';
+import 'package:flutter_to_do_app/authentification/auth.dart';
 
-class ForgotPWScreen extends StatefulWidget {
+class ForgotPWPage extends StatefulWidget {
+  const ForgotPWPage({Key? key}) : super(key: key);
+
   @override
-  _ForgotPWScreenState createState() => _ForgotPWScreenState();
+  _ForgotPWPageState createState() => _ForgotPWPageState();
 }
 
-class _ForgotPWScreenState extends State<ForgotPWScreen> {
+class _ForgotPWPageState extends State<ForgotPWPage> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
 
@@ -136,8 +140,20 @@ class _ForgotPWScreenState extends State<ForgotPWScreen> {
       width: double.infinity,
       child: ElevatedButton(
         style: style,
-        onPressed: () {
-          context.read<AuthenticationService>().resetPassword(emailController);
+        onPressed: () async {
+          bool result = await context
+              .read<AuthenticationService>()
+              .resetPassword(
+                  email: emailController.text.trim().toLowerCase(),
+                  context: context);
+          if (result) {
+            Navigator.pop(context);
+
+            Toast(
+                context: context,
+                message: 'Email sent successfully',
+                type: ToastType.success);
+          }
         },
         child: const Text(
           'RESET PASSWORD',

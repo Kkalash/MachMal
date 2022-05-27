@@ -1,37 +1,23 @@
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/bloc/category_bloc.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
-import 'package:provider/provider.dart';
 import '../authentification/auth.dart';
-import 'sidenav.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/widgets/toast.dart';
+import 'package:flutter_to_do_app/bloc/category_bloc.dart';
+import 'package:flutter_to_do_app/enums/toast_type.enum.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpPageState extends State<SignUpPage> {
   final CategoryBloc categoryBloc = CategoryBloc();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-
-    super.dispose();
-  }
-
-  static const labelTextStyle = TextStyle(
-    color: tertiaryColor,
-    fontSize: 30.0,
-    fontWeight: FontWeight.bold,
-  );
 
   final boxDecorationStyle = BoxDecoration(
     color: tertiaryColor,
@@ -45,92 +31,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ],
   );
 
-  Widget _buildEmailTF() {
-    const textStyle = TextStyle(color: primaryAccentColor);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Email',
-          style: labelTextStyle,
-        ),
-        const SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: boxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-              keyboardType: TextInputType.emailAddress,
-              controller: emailController,
-              style: textStyle,
-              decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(Icons.email, color: primaryAccentColor),
-                  hintText: 'Enter your Email',
-                  hintStyle: TextStyle(
-                    color: shadeColor,
-                  ))),
-        ),
-      ],
-    );
-  }
+  static const labelTextStyle = TextStyle(
+    color: tertiaryColor,
+    fontSize: 30.0,
+    fontWeight: FontWeight.bold,
+  );
 
-  Widget _buildPasswordTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Password',
-          style: labelTextStyle,
-        ),
-        const SizedBox(height: 10.0),
-        Container(
-            alignment: Alignment.centerLeft,
-            decoration: boxDecorationStyle,
-            height: 60.0,
-            child: TextField(
-                obscureText: true,
-                controller: passwordController,
-                decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(top: 14.0),
-                    prefixIcon: Icon(Icons.lock, color: primaryAccentColor),
-                    hintText: 'Enter your Password',
-                    hintStyle: TextStyle(color: shadeColor)))),
-      ],
-    );
-  }
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
 
-  Widget _buildSignUpBtn() {
-    final ButtonStyle style = ElevatedButton.styleFrom(
-        elevation: 5.0,
-        padding: const EdgeInsets.all(15.0),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        primary: tertiaryColor);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 25.0),
-      width: double.infinity,
-      child: ElevatedButton(
-        style: style,
-        onPressed: () {
-          context.read<AuthenticationService>().signUp(
-              email: emailController.text.trim(),
-              password: passwordController.text.trim());
-        },
-        child: const Text(
-          'SIGN UP',
-          style: TextStyle(
-            color: primaryAccentColor,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
+    super.dispose();
   }
 
   @override
@@ -188,6 +100,103 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildEmailTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text(
+          'Email',
+          style: labelTextStyle,
+        ),
+        const SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: boxDecorationStyle,
+          height: 60.0,
+          child: TextField(
+              keyboardType: TextInputType.emailAddress,
+              controller: emailController,
+              style: const TextStyle(color: primaryAccentColor),
+              decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.only(top: 14.0),
+                  prefixIcon: Icon(Icons.email, color: primaryAccentColor),
+                  hintText: 'Enter your Email',
+                  hintStyle: TextStyle(
+                    color: shadeColor,
+                  ))),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text(
+          'Password',
+          style: labelTextStyle,
+        ),
+        const SizedBox(height: 10.0),
+        Container(
+            alignment: Alignment.centerLeft,
+            decoration: boxDecorationStyle,
+            height: 60.0,
+            child: TextField(
+                obscureText: true,
+                controller: passwordController,
+                decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(top: 14.0),
+                    prefixIcon: Icon(Icons.lock, color: primaryAccentColor),
+                    hintText: 'Enter your Password',
+                    hintStyle: TextStyle(color: shadeColor)))),
+      ],
+    );
+  }
+
+  Widget _buildSignUpBtn() {
+    final ButtonStyle style = ElevatedButton.styleFrom(
+        elevation: 5.0,
+        padding: const EdgeInsets.all(15.0),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+        primary: tertiaryColor);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 25.0),
+      width: double.infinity,
+      child: ElevatedButton(
+        style: style,
+        onPressed: () async {
+          User? user = await context.read<AuthenticationService>().signUp(
+              email: emailController.text.trim().toLowerCase(),
+              password: passwordController.text.trim(),
+              context: context);
+
+          if (user != null) {
+            Navigator.pop(context);
+
+            Toast(
+                context: context,
+                message: 'Singup Successful',
+                type: ToastType.success);
+          }
+        },
+        child: const Text(
+          'SIGN UP',
+          style: TextStyle(
+            color: primaryAccentColor,
+            letterSpacing: 1.5,
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

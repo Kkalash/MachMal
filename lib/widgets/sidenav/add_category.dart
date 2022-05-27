@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/bloc/category_bloc.dart';
-import 'package:flutter_to_do_app/models/category.dart';
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/models/category.dart';
+import 'package:flutter_to_do_app/bloc/category_bloc.dart';
 
 class AddCategory extends StatelessWidget {
   final CategoryBloc categoryBloc;
@@ -94,7 +95,7 @@ class AddCategory extends StatelessWidget {
                                   hintText: 'Work',
                                   labelText: 'New Category',
                                   labelStyle: TextStyle(
-                                      color: Colors.indigoAccent,
+                                      color: primaryColor,
                                       fontWeight: FontWeight.w500)),
                               validator: (String? value) {
                                 if (value!.isEmpty) {
@@ -109,20 +110,20 @@ class AddCategory extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 5, top: 15),
                             child: CircleAvatar(
-                              backgroundColor: Colors.indigoAccent,
+                              backgroundColor: primaryColor,
                               radius: 18,
                               child: IconButton(
                                 icon: const Icon(
                                   Icons.save,
                                   size: 22,
-                                  color: Colors.white,
+                                  color: tertiaryColor,
                                 ),
                                 onPressed: () {
                                   final newCategory = Category(
-                                      description:
+                                      description: StringUtils.capitalize(
                                           _categoryDescriptionFormController
                                               .value.text
-                                              .trim());
+                                              .trim()));
                                   if (newCategory.description.isNotEmpty) {
                                     /*Create new Category object and make sure
                                     the Category description is not empty,

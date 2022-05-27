@@ -1,15 +1,16 @@
-import 'package:firebase_core/firebase_core.dart';
+import 'ui/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/authentification/auth.dart';
-import 'package:flutter_to_do_app/ui/sign_up_screen.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
-import 'ui/login_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/authentification/auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await Hive.initFlutter();
   runApp(const ToDoApp());
 }
 
@@ -34,17 +35,7 @@ class ToDoApp extends StatelessWidget {
           theme: ThemeData(
               primarySwatch: createMaterialColor(const Color(0xFF116466)),
               canvasColor: Colors.transparent),
-          home: const LoginScreen(),
+          home: const LoginPage(),
         ));
   }
-
-/*   @override
-  Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User>();
-
-    if (firebaseUser != null) {
-      return const LoginScreen();
-    }
-    return const SignUpScreen();
-  } */
 }

@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/bloc/category_bloc.dart';
-import 'package:flutter_to_do_app/models/category.dart';
-import 'package:flutter_to_do_app/ui/todo_list.dart';
+import 'package:basic_utils/basic_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
-import 'package:flutter_to_do_app/widgets/about.dart';
-import 'package:flutter_to_do_app/widgets/add_category.dart';
+import 'package:flutter_to_do_app/ui/todo_list.dart';
+import 'package:flutter_to_do_app/widgets/toast.dart';
+import 'package:flutter_to_do_app/models/category.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
-import 'package:flutter_to_do_app/widgets/settings.dart';
+import 'package:flutter_to_do_app/bloc/category_bloc.dart';
+import 'package:flutter_to_do_app/widgets/sidenav/about.dart';
+import 'package:flutter_to_do_app/widgets/sidenav/login.dart';
+import 'package:flutter_to_do_app/enums/toast_type.enum.dart';
+import 'package:flutter_to_do_app/widgets/sidenav/settings.dart';
+import 'package:flutter_to_do_app/widgets/sidenav/sign_out.dart';
+import 'package:flutter_to_do_app/widgets/sidenav/add_category.dart';
 
 class Sidenav extends Drawer {
   final CategoryBloc categoryBloc;
@@ -49,6 +55,7 @@ class Sidenav extends Drawer {
           ),
           const Settings(),
           const About(),
+          loginOrSignOut()
         ],
       ),
     );
@@ -86,12 +93,9 @@ class Sidenav extends Drawer {
                   ),
                   trailing: ElevatedButton(
                     onPressed: () {
-                      categoryBloc.deleteCategoryById(category.id!);
-                      MaterialPageRoute(
-                          builder: (context) => TodoList(
-                                categoryBloc,
-                                currentCategory: category,
-                              ));
+                      showAlertDialog(context, category);
+                      // ignore: todo
+                      // TODO: Navigate to the next category after if current category is deleted.
                     },
                     child: const Icon(Icons.delete, color: primaryColor),
                     style: ElevatedButton.styleFrom(
@@ -100,7 +104,7 @@ class Sidenav extends Drawer {
                       primary: tertiaryColor, // <-- Button color
                     ),
                   ),
-                  onTap: () => Navigator.push(
+                  onTap: () => Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) => TodoList(
@@ -130,5 +134,55 @@ class Sidenav extends Drawer {
             style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500))
       ],
     ));
+  }
+
+  Widget loginOrSignOut() {
+    return FirebaseAuth.instance.currentUser == null ||
+            FirebaseAuth.instance.currentUser?.isAnonymous == true
+        ? const Login()
+        : const SignOut();
+  }
+
+  showAlertDialog(BuildContext context, Category category) {
+    Widget cancelButton = TextButton(
+      child: const Text('Cancel'),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: const Text('Delete'),
+      onPressed: () {
+        categoryBloc.deleteCategoryById(category.id!);
+        Navigator.of(context).pop();
+        Toast(
+            context: context,
+            message: 'Category deleted successfuly',
+            type: ToastType.success);
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Row(
+        children: [
+          const Text('Delete '),
+          Text(StringUtils.capitalize(category.description),
+              style: const TextStyle(
+                  fontWeight: FontWeight.w500, color: primaryColor)),
+        ],
+      ),
+      content: const Text('Would you like to delete this category?'),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
