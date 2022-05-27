@@ -18,6 +18,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final CategoryBloc categoryBloc = CategoryBloc();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   final boxDecorationStyle = BoxDecoration(
     color: tertiaryColor,
@@ -39,10 +41,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   void dispose() {
+    super.dispose();
+
     emailController.dispose();
     passwordController.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -94,6 +96,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   _buildEmailTF(),
                   const SizedBox(height: 30.0),
                   _buildPasswordTF(),
+                  const SizedBox(height: 30.0),
+                  _buildConfirmPasswordTF(),
                   _buildSignUpBtn()
                 ],
               ),
@@ -125,7 +129,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.only(top: 14.0),
                   prefixIcon: Icon(Icons.email, color: primaryAccentColor),
-                  hintText: 'Enter your Email',
+                  hintText: 'example@gmail.com',
                   hintStyle: TextStyle(
                     color: shadeColor,
                   ))),
@@ -160,6 +164,32 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  Widget _buildConfirmPasswordTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text(
+          'Confirm Password',
+          style: labelTextStyle,
+        ),
+        const SizedBox(height: 10.0),
+        Container(
+            alignment: Alignment.centerLeft,
+            decoration: boxDecorationStyle,
+            height: 60.0,
+            child: TextField(
+                obscureText: true,
+                controller: confirmPasswordController,
+                decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(top: 14.0),
+                    prefixIcon: Icon(Icons.lock, color: primaryAccentColor),
+                    hintText: 'Enter your Password',
+                    hintStyle: TextStyle(color: shadeColor)))),
+      ],
+    );
+  }
+
   Widget _buildSignUpBtn() {
     final ButtonStyle style = ElevatedButton.styleFrom(
         elevation: 5.0,
@@ -174,6 +204,14 @@ class _SignUpPageState extends State<SignUpPage> {
       child: ElevatedButton(
         style: style,
         onPressed: () async {
+          if (passwordController.text != confirmPasswordController.text) {
+            Toast(
+                context: context,
+                message: 'Passwords do not match',
+                type: ToastType.error);
+            return;
+          }
+
           User? user = await context.read<AuthenticationService>().signUp(
               email: emailController.text.trim().toLowerCase(),
               password: passwordController.text.trim(),
