@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
 
 class SearchTodo extends StatelessWidget {
   final TodoBloc todoBloc;

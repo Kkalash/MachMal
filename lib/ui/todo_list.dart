@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_to_do_app/bloc/category_bloc.dart';
-import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
-import 'package:flutter_to_do_app/models/category.dart';
+import 'package:flutter_to_do_app/ui/sidenav.dart';
 import 'package:flutter_to_do_app/models/todo.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
-import 'package:flutter_to_do_app/ui/sidenav.dart';
-import 'package:flutter_to_do_app/widgets/add_todo.dart';
-import 'package:flutter_to_do_app/widgets/delete_filter.dart';
+import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
+import 'package:flutter_to_do_app/models/category.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
+import 'package:flutter_to_do_app/widgets/add_todo.dart';
+import 'package:flutter_to_do_app/bloc/category_bloc.dart';
 import 'package:flutter_to_do_app/widgets/search_todo.dart';
+import 'package:flutter_to_do_app/widgets/delete_filter.dart';
 
 class TodoList extends StatelessWidget {
   final CategoryBloc categoryBloc;
