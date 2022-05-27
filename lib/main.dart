@@ -1,3 +1,6 @@
+import 'package:flutter_to_do_app/ui/sidenav.dart';
+
+import 'bloc/category_bloc.dart';
 import 'ui/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +38,18 @@ class ToDoApp extends StatelessWidget {
           theme: ThemeData(
               primarySwatch: createMaterialColor(const Color(0xFF116466)),
               canvasColor: Colors.transparent),
-          home: const LoginPage(),
+          home: _getHomePageOrLogin(),
         ));
+  }
+
+  Widget _getHomePageOrLogin() {
+    final CategoryBloc categoryBloc = CategoryBloc();
+
+    final auth = FirebaseAuth.instance.currentUser;
+    if (auth != null) {
+      return Sidenav(categoryBloc);
+    } else {
+      return const LoginPage();
+    }
   }
 }

@@ -35,8 +35,9 @@ class _ForgotPWPageState extends State<ForgotPWPage> {
   );
   @override
   void dispose() {
-    emailController.dispose();
     super.dispose();
+
+    emailController.dispose();
   }
 
   @override
