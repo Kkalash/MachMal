@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_to_do_app/shared/models/todo.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/repository/todo_firestore_repo.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
 
-class SearchTodo extends StatelessWidget {
+class AddTodo extends StatelessWidget {
   final String categoryId;
   final TodoFireStoreRepo repository;
 
-  const SearchTodo(
-      {Key? key, required this.categoryId, required this.repository})
+  const AddTodo({Key? key, required this.categoryId, required this.repository})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(
-        Icons.search,
-        size: 28,
-        color: primaryColor,
-      ),
+    return FloatingActionButton(
+      elevation: 5.0,
       onPressed: () {
-        _showTodoSearchSheet(context);
+        _showAddTodoSheet(context);
       },
+      backgroundColor: primaryColor,
+      child: const Icon(
+        Icons.add,
+        size: 32,
+        color: tertiaryColor,
+      ),
     );
   }
 
-  void _showTodoSearchSheet(BuildContext context) {
-    final _todoSearchDescriptionFormController = TextEditingController();
+  void _showAddTodoSheet(BuildContext context) {
+    final _todoDescriptionFormController = TextEditingController();
     showModalBottomSheet(
         context: context,
         builder: (builder) {
@@ -52,25 +54,25 @@ class SearchTodo extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                             child: TextFormField(
-                              controller: _todoSearchDescriptionFormController,
+                              controller: _todoDescriptionFormController,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
                               style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w400),
+                                  fontSize: 21, fontWeight: FontWeight.w400),
                               autofocus: true,
                               decoration: const InputDecoration(
-                                hintText: 'Search for todo...',
-                                labelText: 'Search *',
-                                labelStyle: TextStyle(
-                                    color: primaryColor,
-                                    fontWeight: FontWeight.w500),
-                              ),
+                                  hintText: 'I have to...',
+                                  labelText: 'New Todo',
+                                  labelStyle: TextStyle(
+                                      color: primaryColor,
+                                      fontWeight: FontWeight.w500)),
                               validator: (String? value) {
-                                if (value!.isNotEmpty) {
-                                  return value.contains('@')
-                                      ? 'Do not use the @ char.'
-                                      : null;
+                                if (value!.isEmpty) {
+                                  return 'Empty description!';
                                 }
+                                return value.contains('')
+                                    ? 'Do not use the @ char.'
+                                    : null;
                               },
                             ),
                           ),
@@ -81,17 +83,22 @@ class SearchTodo extends StatelessWidget {
                               radius: 18,
                               child: IconButton(
                                 icon: const Icon(
-                                  Icons.search,
+                                  Icons.save,
                                   size: 22,
                                   color: tertiaryColor,
                                 ),
                                 onPressed: () {
-                                  repository.filterTodos(
-                                      categoryId,
-                                      _todoSearchDescriptionFormController
-                                          .value.text);
+                                  final newTodo = Todo(
+                                      description:
+                                          _todoDescriptionFormController
+                                              .value.text
+                                              .trim());
 
-                                  Navigator.pop(context);
+                                  if (newTodo.description.isNotEmpty) {
+                                    repository.addTodo(categoryId, newTodo);
+
+                                    Navigator.pop(context);
+                                  }
                                 },
                               ),
                             ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
-import 'package:flutter_to_do_app/enums/toast_type.enum.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/authentification/auth.dart';
+import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 
 class ForgotPWPage extends StatefulWidget {
   const ForgotPWPage({Key? key}) : super(key: key);

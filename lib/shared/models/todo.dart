@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Todo {
-  String? todoId;
+  String? id;
   final String description;
   bool isDone;
 
-  Todo({this.todoId, required this.description, this.isDone = false});
+  Todo({this.id, required this.description, this.isDone = false});
 
   factory Todo.fromSnapshot(DocumentSnapshot snapshot) {
     final todo = Todo.fromJson(snapshot.data() as Map<String, dynamic>);
-    todo.todoId = snapshot.reference.id;
+    todo.id = snapshot.reference.id;
 
     return todo;
   }

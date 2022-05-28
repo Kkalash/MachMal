@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_to_do_app/models/todo.dart';
 import 'package:flutter_to_do_app/ui/sidenav.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_to_do_app/models/category.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
-import 'package:flutter_to_do_app/widgets/add_todo.dart';
-import 'package:flutter_to_do_app/widgets/search_todo.dart';
+import 'package:flutter_to_do_app/widgets/todo-list/add_todo.dart';
+import 'package:flutter_to_do_app/shared/models/todo.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
+import 'package:flutter_to_do_app/widgets/todo-list/search_todo.dart';
 import 'package:flutter_to_do_app/widgets/loading_data.dart';
-import 'package:flutter_to_do_app/widgets/delete_filter.dart';
+import 'package:flutter_to_do_app/widgets/todo-list/delete_filter.dart';
+import 'package:flutter_to_do_app/shared/models/category.dart';
 import 'package:flutter_to_do_app/repository/todo_firestore_repo.dart';
 
 class TodoList extends StatelessWidget {
@@ -77,10 +77,9 @@ class TodoList extends StatelessWidget {
                 ),
                 Wrap(children: <Widget>[
                   DeleteFilter(
-                      categoryId: currentCategory.categoryId!,
-                      repository: repository),
+                      categoryId: currentCategory.id!, repository: repository),
                   SearchTodo(
-                    categoryId: currentCategory.categoryId!,
+                    categoryId: currentCategory.id!,
                     repository: repository,
                   ),
                   const Padding(
@@ -97,14 +96,14 @@ class TodoList extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 25),
           child: AddTodo(
             repository: repository,
-            categoryId: currentCategory.categoryId!,
+            categoryId: currentCategory.id!,
           ),
         ));
   }
 
   Widget getTodosWidget() {
     return StreamBuilder<QuerySnapshot>(
-      stream: repository.getStream(currentCategory.categoryId!),
+      stream: repository.getStream(currentCategory.id!),
       builder: (context, snapshot) {
         return getTodoCardWidget(snapshot);
       },
@@ -134,8 +133,7 @@ class TodoList extends StatelessWidget {
                     color: primaryAccentColor,
                   ),
                   onDismissed: (direction) {
-                    repository.deleteTodo(
-                        currentCategory.categoryId!, todo.todoId!);
+                    repository.deleteTodo(currentCategory.id!, todo.id!);
                   },
                   direction: _dismissDirection,
                   key: UniqueKey(),
@@ -150,8 +148,7 @@ class TodoList extends StatelessWidget {
                           onTap: () {
                             todo.isDone = !todo.isDone;
 
-                            repository.updateTodo(
-                                currentCategory.categoryId!, todo);
+                            repository.updateTodo(currentCategory.id!, todo);
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(15.0),

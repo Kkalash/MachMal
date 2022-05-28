@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/ui/todo_list.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
-import 'package:flutter_to_do_app/models/category.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/widgets/loading_data.dart';
 import 'package:flutter_to_do_app/widgets/sidenav/about.dart';
 import 'package:flutter_to_do_app/widgets/sidenav/login.dart';
-import 'package:flutter_to_do_app/enums/toast_type.enum.dart';
+import 'package:flutter_to_do_app/shared/models/category.dart';
 import 'package:flutter_to_do_app/widgets/sidenav/settings.dart' as settings;
 import 'package:flutter_to_do_app/widgets/sidenav/sign_out.dart';
 import 'package:flutter_to_do_app/widgets/sidenav/add_category.dart';
+import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class Sidenav extends Drawer {
@@ -143,7 +143,7 @@ class Sidenav extends Drawer {
     Widget continueButton = TextButton(
       child: const Text('Delete'),
       onPressed: () {
-        categoryRepository.deleteCategory(category.categoryId!);
+        categoryRepository.deleteCategory(category.id!);
         Navigator.of(context).pop();
         Toast(
             context: context,

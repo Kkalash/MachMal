@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:basic_utils/basic_utils.dart';
-import 'package:flutter_to_do_app/models/category.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
+import 'package:flutter_to_do_app/shared/models/category.dart';
 import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class AddCategory extends StatelessWidget {
@@ -120,27 +120,15 @@ class AddCategory extends StatelessWidget {
                                   color: tertiaryColor,
                                 ),
                                 onPressed: () {
-                                  final test = Category(
+                                  final newCategory = Category(
                                       title: StringUtils.capitalize(
                                           _categoryDescriptionFormController
                                               .value.text
                                               .trim()));
 
-                                  // final newCategory = Category(
-                                  //     description: StringUtils.capitalize(
-                                  //         _categoryDescriptionFormController
-                                  //             .value.text
-                                  //             .trim()));
-                                  if (test.title.isNotEmpty) {
-                                    /*Create new Category object and make sure
-                                    the Category description is not empty,
-                                    because what's the point of saving empty
-                                    Category
-                                    */
-                                    // categoryBloc.addCategory(newCategory);
-                                    categoryRepository.addCategory(test);
+                                  if (newCategory.title.isNotEmpty) {
+                                    categoryRepository.addCategory(newCategory);
 
-                                    //dismisses the bottomsheet
                                     Navigator.pop(context);
                                   }
                                 },

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_to_do_app/models/todo.dart';
+import 'package:flutter_to_do_app/shared/models/todo.dart';
 
 class TodoFireStoreRepo {
   final CollectionReference collection =
@@ -18,6 +18,10 @@ class TodoFireStoreRepo {
         .get();
   }
 
+  Future<QuerySnapshot> getTodosByCategoryId(String categoryId) {
+    return collection.doc(categoryId).collection('todos').get();
+  }
+
   Future<DocumentReference> addTodo(String categoryId, Todo todo) {
     return collection.doc(categoryId).collection('todos').add(todo.toJson());
   }
@@ -26,7 +30,7 @@ class TodoFireStoreRepo {
     await collection
         .doc(categoryId)
         .collection('todos')
-        .doc(todo.todoId)
+        .doc(todo.id)
         .update(todo.toJson());
   }
 

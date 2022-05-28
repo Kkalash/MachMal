@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/enums/toast_type.enum.dart';
+import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
+import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;

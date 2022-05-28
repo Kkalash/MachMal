@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Category {
-  String? categoryId;
+  String? id;
   String title;
 
-  Category({this.categoryId, required this.title});
+  Category({this.id, required this.title});
 
   factory Category.fromSnapshot(DocumentSnapshot snapshot) {
     final category = Category.fromJson(snapshot.data() as Map<String, dynamic>);
-    category.categoryId = snapshot.reference.id;
+    category.id = snapshot.reference.id;
 
     return category;
   }

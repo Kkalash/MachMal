@@ -5,7 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_to_do_app/ui/sidenav.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/authentification/auth.dart';
 
 void main() async {
@@ -41,11 +41,8 @@ class ToDoApp extends StatelessWidget {
   }
 
   Widget _getHomePageOrLogin() {
-    final auth = FirebaseAuth.instance.currentUser;
-    if (auth != null) {
-      return Sidenav();
-    } else {
-      return const LoginPage();
-    }
+    return FirebaseAuth.instance.currentUser != null
+        ? Sidenav()
+        : const LoginPage();
   }
 }
