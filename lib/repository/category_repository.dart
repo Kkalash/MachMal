@@ -1,17 +1,23 @@
-import 'package:flutter_to_do_app/dao/category_dao.dart';
-import 'package:flutter_to_do_app/models/category.dart';
+import '../models/category.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CategoryRepository {
-  final categoryDao = CategoryDao();
+class CategoryFirestoreRepo {
+  final CollectionReference collection =
+      FirebaseFirestore.instance.collection('categories');
 
-  Future getAllCategories({String? query}) =>
-      categoryDao.getCategories(query: query);
+  Stream<QuerySnapshot> getStream() {
+    return collection.snapshots();
+  }
 
-  Future insertCategory(Category category) =>
-      categoryDao.createCategory(category);
+  Future<DocumentReference> addCategory(Category category) {
+    return collection.add(category.toJson());
+  }
 
-  Future updateCategory(Category category) =>
-      categoryDao.updateCategory(category);
+  void updateCategory(Category category) async {
+    await collection.doc(category.categoryId).update(category.toJson());
+  }
 
-  Future deleteCategory(int id) => categoryDao.deleteCategory(id);
+  void deleteCategory(String categoryId) async {
+    await collection.doc(categoryId).delete();
+  }
 }

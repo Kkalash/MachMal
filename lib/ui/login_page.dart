@@ -9,7 +9,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
 import 'package:flutter_to_do_app/ui/sign_up_page.dart';
-import 'package:flutter_to_do_app/bloc/category_bloc.dart';
 import 'package:flutter_to_do_app/authentification/auth.dart';
 import 'package:flutter_to_do_app/enums/toast_type.enum.dart';
 
@@ -21,7 +20,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final CategoryBloc categoryBloc = CategoryBloc();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   

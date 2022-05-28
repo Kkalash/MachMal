@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_to_do_app/models/category_firebase.dart';
-import 'package:flutter_to_do_app/repository/data_repository.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/ui/todo_list.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
-import 'package:flutter_to_do_app/models/category.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
-import 'package:flutter_to_do_app/bloc/category_bloc.dart';
+import 'package:flutter_to_do_app/models/category.dart';
+import 'package:flutter_to_do_app/widgets/loading_data.dart';
 import 'package:flutter_to_do_app/widgets/sidenav/about.dart';
 import 'package:flutter_to_do_app/widgets/sidenav/login.dart';
 import 'package:flutter_to_do_app/enums/toast_type.enum.dart';
 import 'package:flutter_to_do_app/widgets/sidenav/settings.dart' as settings;
 import 'package:flutter_to_do_app/widgets/sidenav/sign_out.dart';
 import 'package:flutter_to_do_app/widgets/sidenav/add_category.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class Sidenav extends Drawer {
-  final CategoryFirestoreRepo repository = CategoryFirestoreRepo();
+  final CategoryFirestoreRepo categoryRepository = CategoryFirestoreRepo();
 
   Sidenav({Key? key}) : super(key: key);
 
@@ -47,9 +46,11 @@ class Sidenav extends Drawer {
               color: primaryAccentColor,
             ),
           ),
-          AddCategory(),
+          AddCategory(
+            categoryRepository: categoryRepository,
+          ),
           // getCategoriesWidget(),
-          test(),
+          getCategoriesWidget(),
           const Divider(
             color: Colors.black,
             height: 20,
@@ -65,24 +66,15 @@ class Sidenav extends Drawer {
     );
   }
 
-  // Widget getCategoriesWidget() {
-  //   return StreamBuilder(
-  //       stream: categoryBloc.categories,
-  //       builder:
-  //           (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
-  //         return getCategoryCardWidget(snapshot);
-  //       });
-  // }
-
-  Widget test() {
+  Widget getCategoriesWidget() {
     return StreamBuilder<QuerySnapshot>(
-        stream: repository.getStream(),
+        stream: categoryRepository.getStream(),
         builder: (context, snapshot) {
-          return testWedget(snapshot);
+          return getCategoryCardWidget(snapshot);
         });
   }
 
-  Widget testWedget(AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
+  Widget getCategoryCardWidget(AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
     if (snapshot.hasData) {
       return snapshot.data?.docs.isEmpty == true
           ? const SizedBox(
@@ -93,8 +85,8 @@ class Sidenav extends Drawer {
               shrinkWrap: true,
               itemCount: snapshot.data?.docs.length,
               itemBuilder: (context, index) {
-                CategoryFirebase category =
-                    CategoryFirebase.fromSnapshot(snapshot.data!.docs[index]);
+                Category category =
+                    Category.fromSnapshot(snapshot.data!.docs[index]);
                 final Widget listTitle = ListTile(
                   title: Text(
                     category.title,
@@ -128,77 +120,11 @@ class Sidenav extends Drawer {
                 return listTitle;
               });
     } else {
-      return Center(
-          // child: loadingData(),
-          );
+      return const Center(
+        child: LoadingData(),
+      );
     }
   }
-
-  // Widget getCategoryCardWidget(AsyncSnapshot<List<Category>> snapshot) {
-  //   if (snapshot.hasData) {
-  //     return snapshot.data?.isEmpty == true
-  //         ? const SizedBox(
-  //             height: 100,
-  //             child: NoData(text: 'Start adding Category...'),
-  //           )
-  //         : ListView.builder(
-  //             shrinkWrap: true,
-  //             itemCount: snapshot.data?.length,
-  //             itemBuilder: (context, index) {
-  //               Category category = snapshot.data![index];
-  //               final Widget listTitle = ListTile(
-  //                 title: Text(
-  //                   category.description,
-  //                   style: const TextStyle(
-  //                     fontSize: 20.5,
-  //                     fontFamily: 'RobotoMono',
-  //                     fontWeight: FontWeight.w400,
-  //                   ),
-  //                 ),
-  //                 trailing: ElevatedButton(
-  //                   onPressed: () {
-  //                     showAlertDialog(context, category);
-  //                     // ignore: todo
-  //                     // TODO: Navigate to the next category after if current category is deleted.
-  //                   },
-  //                   child: const Icon(Icons.delete, color: primaryColor),
-  //                   style: ElevatedButton.styleFrom(
-  //                     shape: const CircleBorder(),
-  //                     padding: const EdgeInsets.all(10),
-  //                     primary: tertiaryColor, // <-- Button color
-  //                   ),
-  //                 ),
-  //                 onTap: () => Navigator.pushReplacement(
-  //                     context,
-  //                     MaterialPageRoute(
-  //                         builder: (context) => TodoList(
-  //                               categoryBloc,
-  //                               currentCategory: category,
-  //                             ))),
-  //               );
-
-  //               return listTitle;
-  //             });
-  //   } else {
-  //     return Center(
-  //       child: loadingData(),
-  //     );
-  //   }
-  // }
-
-  // Widget loadingData() {
-  //   categoryBloc.getCategories();
-
-  //   return Center(
-  //       child: Column(
-  //     mainAxisAlignment: MainAxisAlignment.center,
-  //     children: const <Widget>[
-  //       CircularProgressIndicator(),
-  //       Text('Loading...',
-  //           style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500))
-  //     ],
-  //   ));
-  // }
 
   Widget loginOrSignOut() {
     return FirebaseAuth.instance.currentUser == null ||
@@ -207,7 +133,7 @@ class Sidenav extends Drawer {
         : const SignOut();
   }
 
-  showAlertDialog(BuildContext context, CategoryFirebase category) {
+  showAlertDialog(BuildContext context, Category category) {
     Widget cancelButton = TextButton(
       child: const Text('Cancel'),
       onPressed: () {
@@ -217,7 +143,7 @@ class Sidenav extends Drawer {
     Widget continueButton = TextButton(
       child: const Text('Delete'),
       onPressed: () {
-        repository.deleteCategory(category.categoryId!);
+        categoryRepository.deleteCategory(category.categoryId!);
         Navigator.of(context).pop();
         Toast(
             context: context,

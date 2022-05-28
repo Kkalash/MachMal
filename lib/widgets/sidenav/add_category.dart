@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:basic_utils/basic_utils.dart';
-import 'package:flutter_to_do_app/models/category_firebase.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/models/category.dart';
-import 'package:flutter_to_do_app/bloc/category_bloc.dart';
-import 'package:flutter_to_do_app/repository/data_repository.dart';
+import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class AddCategory extends StatelessWidget {
-  final CategoryFirestoreRepo repository = CategoryFirestoreRepo();
+  final CategoryFirestoreRepo categoryRepository;
 
-  AddCategory({Key? key}) : super(key: key);
+  const AddCategory({Key? key, required this.categoryRepository})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +120,7 @@ class AddCategory extends StatelessWidget {
                                   color: tertiaryColor,
                                 ),
                                 onPressed: () {
-                                  final test = CategoryFirebase(
+                                  final test = Category(
                                       title: StringUtils.capitalize(
                                           _categoryDescriptionFormController
                                               .value.text
@@ -139,7 +138,7 @@ class AddCategory extends StatelessWidget {
                                     Category
                                     */
                                     // categoryBloc.addCategory(newCategory);
-                                    repository.addCategory(test);
+                                    categoryRepository.addCategory(test);
 
                                     //dismisses the bottomsheet
                                     Navigator.pop(context);

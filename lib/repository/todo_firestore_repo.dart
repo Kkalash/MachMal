@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_to_do_app/models/todo_firebase.dart';
+import 'package:flutter_to_do_app/models/todo.dart';
 
 class TodoFireStoreRepo {
   final CollectionReference collection =
@@ -18,11 +18,11 @@ class TodoFireStoreRepo {
         .get();
   }
 
-  Future<DocumentReference> addTodo(String categoryId, TodoFirebase todo) {
+  Future<DocumentReference> addTodo(String categoryId, Todo todo) {
     return collection.doc(categoryId).collection('todos').add(todo.toJson());
   }
 
-  void updateTodo(String categoryId, TodoFirebase todo) async {
+  void updateTodo(String categoryId, Todo todo) async {
     await collection
         .doc(categoryId)
         .collection('todos')

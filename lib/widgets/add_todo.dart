@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_app/models/todo.dart';
-import 'package:flutter_to_do_app/models/todo_firebase.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
-import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
 import 'package:flutter_to_do_app/repository/todo_firestore_repo.dart';
 
 class AddTodo extends StatelessWidget {
@@ -90,28 +88,15 @@ class AddTodo extends StatelessWidget {
                                   color: tertiaryColor,
                                 ),
                                 onPressed: () {
-                                  final test = TodoFirebase(
+                                  final newTodo = Todo(
                                       description:
                                           _todoDescriptionFormController
                                               .value.text
                                               .trim());
 
-                                  // final newTodo = Todo(
-                                  //     categoryId: categoryId,
-                                  //     description:
-                                  //         _todoDescriptionFormController
-                                  //             .value.text
-                                  //             .trim());
-                                  if (test.description.isNotEmpty) {
-                                    /*Create new Todo object and make sure
-                                    the Todo description is not empty,
-                                    because what's the point of saving empty
-                                    Todo
-                                    */
-                                    // todoBloc.addTodo(newTodo);
-                                    repository.addTodo(categoryId, test);
+                                  if (newTodo.description.isNotEmpty) {
+                                    repository.addTodo(categoryId, newTodo);
 
-                                    //dismisses the bottomsheet
                                     Navigator.pop(context);
                                   }
                                 },

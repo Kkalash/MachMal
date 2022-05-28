@@ -1,5 +1,4 @@
 import 'ui/login_page.dart';
-import 'bloc/category_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -42,10 +41,11 @@ class ToDoApp extends StatelessWidget {
   }
 
   Widget _getHomePageOrLogin() {
-    final CategoryBloc categoryBloc = CategoryBloc();
-
-    return FirebaseAuth.instance.currentUser != null
-        ? Sidenav()
-        : const LoginPage();
+    final auth = FirebaseAuth.instance.currentUser;
+    if (auth != null) {
+      return Sidenav();
+    } else {
+      return const LoginPage();
+    }
   }
 }

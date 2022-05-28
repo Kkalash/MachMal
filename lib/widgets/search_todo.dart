@@ -86,15 +86,11 @@ class SearchTodo extends StatelessWidget {
                                   color: tertiaryColor,
                                 ),
                                 onPressed: () {
-                                  /*This will get all todos
-                                  that contains similar string
-                                  in the textform
-                                  */
                                   repository.filterTodos(
                                       categoryId,
                                       _todoSearchDescriptionFormController
                                           .value.text);
-                                  //dismisses the bottomsheet
+
                                   Navigator.pop(context);
                                 },
                               ),
