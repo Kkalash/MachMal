@@ -246,7 +246,7 @@ class _LoginPageState extends State<LoginPage> {
            rememberUser();
               
             Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => Sidenav(categoryBloc)));
+                MaterialPageRoute(builder: (context) => Sidenav()));
                 
             Toast(
                 context: context,
@@ -321,7 +321,7 @@ class _LoginPageState extends State<LoginPage> {
 
           if(user != null) {
             Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => Sidenav(categoryBloc)));
+                MaterialPageRoute(builder: (context) => Sidenav()));
           }
           },
           child: const Text(

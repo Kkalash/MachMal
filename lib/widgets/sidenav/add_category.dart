@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:basic_utils/basic_utils.dart';
+import 'package:flutter_to_do_app/models/category_firebase.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/models/category.dart';
 import 'package:flutter_to_do_app/bloc/category_bloc.dart';
+import 'package:flutter_to_do_app/repository/data_repository.dart';
 
 class AddCategory extends StatelessWidget {
-  final CategoryBloc categoryBloc;
+  final CategoryFirestoreRepo repository = CategoryFirestoreRepo();
 
-  const AddCategory({Key? key, required this.categoryBloc}) : super(key: key);
+  AddCategory({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -119,18 +121,25 @@ class AddCategory extends StatelessWidget {
                                   color: tertiaryColor,
                                 ),
                                 onPressed: () {
-                                  final newCategory = Category(
-                                      description: StringUtils.capitalize(
+                                  final test = CategoryFirebase(
+                                      title: StringUtils.capitalize(
                                           _categoryDescriptionFormController
                                               .value.text
                                               .trim()));
-                                  if (newCategory.description.isNotEmpty) {
+
+                                  // final newCategory = Category(
+                                  //     description: StringUtils.capitalize(
+                                  //         _categoryDescriptionFormController
+                                  //             .value.text
+                                  //             .trim()));
+                                  if (test.title.isNotEmpty) {
                                     /*Create new Category object and make sure
                                     the Category description is not empty,
                                     because what's the point of saving empty
                                     Category
                                     */
-                                    categoryBloc.addCategory(newCategory);
+                                    // categoryBloc.addCategory(newCategory);
+                                    repository.addCategory(test);
 
                                     //dismisses the bottomsheet
                                     Navigator.pop(context);

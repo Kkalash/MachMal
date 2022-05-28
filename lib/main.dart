@@ -1,12 +1,11 @@
-import 'package:flutter_to_do_app/ui/sidenav.dart';
-
-import 'bloc/category_bloc.dart';
 import 'ui/login_page.dart';
+import 'bloc/category_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_to_do_app/ui/sidenav.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/authentification/auth.dart';
 
@@ -45,11 +44,8 @@ class ToDoApp extends StatelessWidget {
   Widget _getHomePageOrLogin() {
     final CategoryBloc categoryBloc = CategoryBloc();
 
-    final auth = FirebaseAuth.instance.currentUser;
-    if (auth != null) {
-      return Sidenav(categoryBloc);
-    } else {
-      return const LoginPage();
-    }
+    return FirebaseAuth.instance.currentUser != null
+        ? Sidenav()
+        : const LoginPage();
   }
 }

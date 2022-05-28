@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
+import 'package:flutter_to_do_app/repository/todo_firestore_repo.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
+import 'package:flutter_to_do_app/repository/data_repository.dart';
 
 class DeleteFilter extends StatelessWidget {
-  final TodoBloc todoBloc;
-  final int categoryId;
+  final String categoryId;
+  final TodoFireStoreRepo repository;
 
-  const DeleteFilter(
-      {Key? key, required this.todoBloc, required this.categoryId})
+  DeleteFilter({Key? key, required this.categoryId, required this.repository})
       : super(key: key);
 
   @override
@@ -19,7 +20,8 @@ class DeleteFilter extends StatelessWidget {
         color: primaryColor,
       ),
       onPressed: () {
-        todoBloc.getTodosByCategoryId(categoryId: categoryId);
+        // todoBloc.getTodosByCategoryId(categoryId: categoryId);
+        repository.getStream(categoryId);
       },
     );
   }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_app/models/todo.dart';
+import 'package:flutter_to_do_app/models/todo_firebase.dart';
 import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
+import 'package:flutter_to_do_app/repository/todo_firestore_repo.dart';
 
 class AddTodo extends StatelessWidget {
-  final TodoBloc todoBloc;
-  final int categoryId;
+  final String categoryId;
+  final TodoFireStoreRepo repository;
 
-  const AddTodo({Key? key, required this.todoBloc, required this.categoryId})
+  const AddTodo({Key? key, required this.categoryId, required this.repository})
       : super(key: key);
 
   @override
@@ -88,19 +90,26 @@ class AddTodo extends StatelessWidget {
                                   color: tertiaryColor,
                                 ),
                                 onPressed: () {
-                                  final newTodo = Todo(
-                                      categoryId: categoryId,
+                                  final test = TodoFirebase(
                                       description:
                                           _todoDescriptionFormController
                                               .value.text
                                               .trim());
-                                  if (newTodo.description.isNotEmpty) {
+
+                                  // final newTodo = Todo(
+                                  //     categoryId: categoryId,
+                                  //     description:
+                                  //         _todoDescriptionFormController
+                                  //             .value.text
+                                  //             .trim());
+                                  if (test.description.isNotEmpty) {
                                     /*Create new Todo object and make sure
                                     the Todo description is not empty,
                                     because what's the point of saving empty
                                     Todo
                                     */
-                                    todoBloc.addTodo(newTodo);
+                                    // todoBloc.addTodo(newTodo);
+                                    repository.addTodo(categoryId, test);
 
                                     //dismisses the bottomsheet
                                     Navigator.pop(context);
