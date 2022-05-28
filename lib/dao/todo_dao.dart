@@ -32,7 +32,9 @@ class TodoDao {
   Future<List<Todo>> filterTodosByDescription(
       int categoryid, String description) async {
     List<Todo> result = (await getTodosByCategoryId(categoryId: categoryid))
-        .where((element) => element.description.contains(description))
+        .where((element) => element.description
+            .toLowerCase()
+            .contains(description.toLowerCase()))
         .toList();
 
     return result;
