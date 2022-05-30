@@ -1,21 +1,57 @@
-import 'package:flutter_to_do_app/dao/todo_dao.dart';
-import 'package:flutter_to_do_app/models/todo.dart';
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_to_do_app/shared/models/todo.dart';
 
 class TodoRepository {
-  final todoDao = TodoDao();
+  final _todoController = StreamController<List<Todo>>.broadcast();
+  final CollectionReference collection =
+      FirebaseFirestore.instance.collection('categories');
 
-  Future getAllTodosByCategoryId({required int categoryId}) =>
-      todoDao.getTodosByCategoryId(categoryId: categoryId);
+  get todos => _todoController.stream;
 
-  Future filterTodosByDescription(
-          {required int categoryId, required String description}) =>
-      todoDao.filterTodosByDescription(categoryId, description);
+  Future<List<Todo>> getTodosByCategoryId(String categoryId) async {
+    final List<Todo> maps = [];
+    final querySnapshot =
+        await collection.doc(categoryId).collection('todos').get();
 
-  Future insertTodo(Todo todo) => todoDao.createTodo(todo);
+    for (var doc in querySnapshot.docs) {
+      maps.add(Todo.fromSnapshot(doc));
+    }
 
-  Future updateTodo(Todo todo) => todoDao.updateTodo(todo);
+    _todoController.sink.add(maps);
 
-  Future deleteTodoById(int id) => todoDao.deleteTodo(id);
+    return maps;
+  }
 
-  Future deleteAllTodos() => todoDao.deleteAllTodos();
+  Future filterTodos(String categoryId, String filter) async {
+    final List<Todo> todos = await getTodosByCategoryId(categoryId);
+    final List<Todo> filterTodos = todos.isNotEmpty
+        ? todos
+            .where((todo) =>
+                todo.description.toLowerCase().contains(filter.toLowerCase()))
+            .toList()
+        : [];
+
+    _todoController.sink.add(filterTodos);
+  }
+
+  Future addTodo(String categoryId, Todo todo) async {
+    collection.doc(categoryId).collection('todos').add(todo.toJson());
+    await getTodosByCategoryId(categoryId);
+  }
+
+  void updateTodo(String categoryId, Todo todo) async {
+    await collection
+        .doc(categoryId)
+        .collection('todos')
+        .doc(todo.id)
+        .update(todo.toJson());
+
+    await getTodosByCategoryId(categoryId);
+  }
+
+  void deleteTodo(String categoryId, String todoId) async {
+    await collection.doc(categoryId).collection('todos').doc(todoId).delete();
+    await getTodosByCategoryId(categoryId);
+  }
 }

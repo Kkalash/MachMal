@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/models/todo.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
-import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
+import 'package:flutter_to_do_app/shared/models/todo.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
+import 'package:flutter_to_do_app/repository/todo_repository.dart';
 
 class AddTodo extends StatelessWidget {
-  final TodoBloc todoBloc;
-  final int categoryId;
+  final String categoryId;
+  final TodoRepository repository;
 
-  const AddTodo({Key? key, required this.todoBloc, required this.categoryId})
+  const AddTodo({Key? key, required this.categoryId, required this.repository})
       : super(key: key);
 
   @override
@@ -89,20 +89,14 @@ class AddTodo extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   final newTodo = Todo(
-                                      categoryId: categoryId,
                                       description:
                                           _todoDescriptionFormController
                                               .value.text
                                               .trim());
-                                  if (newTodo.description.isNotEmpty) {
-                                    /*Create new Todo object and make sure
-                                    the Todo description is not empty,
-                                    because what's the point of saving empty
-                                    Todo
-                                    */
-                                    todoBloc.addTodo(newTodo);
 
-                                    //dismisses the bottomsheet
+                                  if (newTodo.description.isNotEmpty) {
+                                    repository.addTodo(categoryId, newTodo);
+
                                     Navigator.pop(context);
                                   }
                                 },

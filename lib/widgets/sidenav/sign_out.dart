@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_to_do_app/ui/login_page.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
-import 'package:flutter_to_do_app/enums/toast_type.enum.dart';
 import 'package:flutter_to_do_app/authentification/auth.dart';
+import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 
 class SignOut extends StatelessWidget {
   const SignOut({Key? key}) : super(key: key);

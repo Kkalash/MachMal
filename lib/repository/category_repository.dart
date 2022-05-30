@@ -1,17 +1,39 @@
-import 'package:flutter_to_do_app/dao/category_dao.dart';
-import 'package:flutter_to_do_app/models/category.dart';
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_to_do_app/shared/models/category.dart';
 
-class CategoryRepository {
-  final categoryDao = CategoryDao();
+class CategoryFirestoreRepo {
+  final _categoryController = StreamController<List<Category>>.broadcast();
+  final CollectionReference collection =
+      FirebaseFirestore.instance.collection('categories');
 
-  Future getAllCategories({String? query}) =>
-      categoryDao.getCategories(query: query);
+  get category => _categoryController.stream;
 
-  Future insertCategory(Category category) =>
-      categoryDao.createCategory(category);
+  Future<List<Category>> getCategories() async {
+    final List<Category> maps = [];
+    final querySnapshot = await collection.get();
 
-  Future updateCategory(Category category) =>
-      categoryDao.updateCategory(category);
+    for (var doc in querySnapshot.docs) {
+      maps.add(Category.fromSnapshot(doc));
+    }
 
-  Future deleteCategory(int id) => categoryDao.deleteCategory(id);
+    _categoryController.sink.add(maps);
+
+    return maps;
+  }
+
+  Future addCategory(Category category) async {
+    collection.add(category.toJson());
+    await getCategories();
+  }
+
+  void updateCategory(Category category) async {
+    await collection.doc(category.id).update(category.toJson());
+    await getCategories();
+  }
+
+  void deleteCategory(String categoryId) async {
+    await collection.doc(categoryId).delete();
+    await getCategories();
+  }
 }

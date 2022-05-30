@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/ui/login_page.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
 
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);

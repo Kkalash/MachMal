@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
-import 'package:flutter_to_do_app/bloc/todo_bloc.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
+import 'package:flutter_to_do_app/repository/todo_repository.dart';
 
 class SearchTodo extends StatelessWidget {
-  final TodoBloc todoBloc;
-  final int categoryId;
+  final String categoryId;
+  final TodoRepository repository;
 
-  const SearchTodo({Key? key, required this.todoBloc, required this.categoryId})
+  const SearchTodo(
+      {Key? key, required this.categoryId, required this.repository})
       : super(key: key);
 
   @override
@@ -85,15 +86,11 @@ class SearchTodo extends StatelessWidget {
                                   color: tertiaryColor,
                                 ),
                                 onPressed: () {
-                                  /*This will get all todos
-                                  that contains similar string
-                                  in the textform
-                                  */
-                                  todoBloc.filterTodos(
+                                  repository.filterTodos(
                                       categoryId,
                                       _todoSearchDescriptionFormController
                                           .value.text);
-                                  //dismisses the bottomsheet
+
                                   Navigator.pop(context);
                                 },
                               ),

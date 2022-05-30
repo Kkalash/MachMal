@@ -6,12 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
 import 'package:flutter_to_do_app/ui/sign_up_page.dart';
-import 'package:flutter_to_do_app/bloc/category_bloc.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/authentification/auth.dart';
-import 'package:flutter_to_do_app/enums/toast_type.enum.dart';
+import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key})  : super(key: key);
@@ -21,7 +20,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final CategoryBloc categoryBloc = CategoryBloc();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   
@@ -246,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
            rememberUser();
               
             Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => Sidenav(categoryBloc)));
+                MaterialPageRoute(builder: (context) => Sidenav()));
                 
             Toast(
                 context: context,
@@ -321,7 +319,7 @@ class _LoginPageState extends State<LoginPage> {
 
           if(user != null) {
             Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => Sidenav(categoryBloc)));
+                MaterialPageRoute(builder: (context) => Sidenav()));
           }
           },
           child: const Text(

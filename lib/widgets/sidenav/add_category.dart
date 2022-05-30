@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:basic_utils/basic_utils.dart';
-import 'package:flutter_to_do_app/utils/utils.dart';
-import 'package:flutter_to_do_app/models/category.dart';
-import 'package:flutter_to_do_app/bloc/category_bloc.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
+import 'package:flutter_to_do_app/shared/models/category.dart';
+import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class AddCategory extends StatelessWidget {
-  final CategoryBloc categoryBloc;
+  final CategoryFirestoreRepo categoryRepository;
 
-  const AddCategory({Key? key, required this.categoryBloc}) : super(key: key);
+  const AddCategory({Key? key, required this.categoryRepository})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +93,7 @@ class AddCategory extends StatelessWidget {
                                   fontSize: 21, fontWeight: FontWeight.w400),
                               autofocus: true,
                               decoration: const InputDecoration(
-                                  hintText: 'Work',
+                                  hintText: 'Shopping list',
                                   labelText: 'New Category',
                                   labelStyle: TextStyle(
                                       color: primaryColor,
@@ -120,19 +121,14 @@ class AddCategory extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   final newCategory = Category(
-                                      description: StringUtils.capitalize(
+                                      title: StringUtils.capitalize(
                                           _categoryDescriptionFormController
                                               .value.text
                                               .trim()));
-                                  if (newCategory.description.isNotEmpty) {
-                                    /*Create new Category object and make sure
-                                    the Category description is not empty,
-                                    because what's the point of saving empty
-                                    Category
-                                    */
-                                    categoryBloc.addCategory(newCategory);
 
-                                    //dismisses the bottomsheet
+                                  if (newCategory.title.isNotEmpty) {
+                                    categoryRepository.addCategory(newCategory);
+
                                     Navigator.pop(context);
                                   }
                                 },
