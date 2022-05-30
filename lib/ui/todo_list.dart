@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_to_do_app/ui/sidenav.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
-import 'package:flutter_to_do_app/widgets/todo-list/add_todo.dart';
 import 'package:flutter_to_do_app/shared/models/todo.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
-import 'package:flutter_to_do_app/widgets/todo-list/search_todo.dart';
 import 'package:flutter_to_do_app/widgets/loading_data.dart';
-import 'package:flutter_to_do_app/widgets/todo-list/delete_filter.dart';
 import 'package:flutter_to_do_app/shared/models/category.dart';
+import 'package:flutter_to_do_app/widgets/todo-list/add_todo.dart';
 import 'package:flutter_to_do_app/repository/todo_repository.dart';
+import 'package:flutter_to_do_app/widgets/todo-list/search_todo.dart';
+import 'package:flutter_to_do_app/widgets/todo-list/delete_filter.dart';
 
 class TodoList extends StatelessWidget {
   final Category category;
@@ -27,9 +27,8 @@ class TodoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: tertiaryColor, //ganz oben der
+        statusBarColor: tertiaryColor,
         systemNavigationBarColor: tertiaryColor,
-        //Android Bar mit zurueck/home screen etc.
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.dark));
     return Scaffold(
@@ -40,9 +39,7 @@ class TodoList extends StatelessWidget {
                 color: tertiaryColor,
                 padding:
                     const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0),
-                child: Container(
-                    //This is where the magic starts
-                    child: getTodosWidget()))),
+                child: Container(child: getTodosWidget()))),
         drawer: Sidenav(),
         bottomNavigationBar: BottomAppBar(
           color: tertiaryColor,
@@ -63,11 +60,9 @@ class TodoList extends StatelessWidget {
                       size: 28,
                     ),
                     onPressed: () {
-                      //just re-pull UI for testing purposes
                       _scaffoldKey.currentState?.openDrawer();
                     }),
                 Expanded(
-                  //Text neben Burgermenu
                   child: Text(
                     category.title,
                     style: const TextStyle(
@@ -93,8 +88,7 @@ class TodoList extends StatelessWidget {
             ),
           ),
         ),
-        floatingActionButtonLocation:
-            FloatingActionButtonLocation.centerDocked, //AddButton
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 25),
           child: AddTodo(
