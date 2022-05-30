@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
-import 'package:flutter_to_do_app/repository/todo_firestore_repo.dart';
+import 'package:flutter_to_do_app/repository/todo_repository.dart';
 
 class DeleteFilter extends StatelessWidget {
   final String categoryId;
-  final TodoFireStoreRepo repository;
+  final TodoRepository repository;
 
   const DeleteFilter(
       {Key? key, required this.categoryId, required this.repository})
@@ -20,9 +19,7 @@ class DeleteFilter extends StatelessWidget {
         color: primaryColor,
       ),
       onPressed: () {
-        late Future<QuerySnapshot<Object?>> test =
-            repository.getTodosByCategoryId(categoryId);
-        print(test.asStream());
+        repository.getTodosByCategoryId(categoryId);
       },
     );
   }

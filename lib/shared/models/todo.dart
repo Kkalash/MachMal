@@ -17,9 +17,6 @@ class Todo {
   factory Todo.fromJson(Map<String, dynamic> json) => _todoFromJson(json);
 
   Map<String, dynamic> toJson() => _todoToJson(this);
-
-  @override
-  String toString() => 'Todo<$description>';
 }
 
 Todo _todoFromJson(Map<String, dynamic> json) {

@@ -93,7 +93,7 @@ class AddCategory extends StatelessWidget {
                                   fontSize: 21, fontWeight: FontWeight.w400),
                               autofocus: true,
                               decoration: const InputDecoration(
-                                  hintText: 'Work',
+                                  hintText: 'Shopping list',
                                   labelText: 'New Category',
                                   labelStyle: TextStyle(
                                       color: primaryColor,

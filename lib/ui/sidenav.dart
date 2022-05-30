@@ -3,7 +3,6 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_to_do_app/ui/todo_list.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/widgets/loading_data.dart';
@@ -24,12 +23,8 @@ class Sidenav extends Drawer {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      // Add a ListView to the drawer. This ensures the user can scroll
-      // through the options in the drawer if there isn't enough vertical
-      // space to fit everything.
       backgroundColor: tertiaryColor,
       child: ListView(
-        // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
@@ -49,7 +44,6 @@ class Sidenav extends Drawer {
           AddCategory(
             categoryRepository: categoryRepository,
           ),
-          // getCategoriesWidget(),
           getCategoriesWidget(),
           const Divider(
             color: Colors.black,
@@ -67,59 +61,57 @@ class Sidenav extends Drawer {
   }
 
   Widget getCategoriesWidget() {
-    return StreamBuilder<QuerySnapshot>(
-        stream: categoryRepository.getStream(),
-        builder: (context, snapshot) {
+    return StreamBuilder(
+        stream: categoryRepository.category,
+        builder: (context, AsyncSnapshot<List<Category>> snapshot) {
           return getCategoryCardWidget(snapshot);
         });
   }
 
-  Widget getCategoryCardWidget(AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
+  Widget getCategoryCardWidget(AsyncSnapshot<List<Category>> snapshot) {
     if (snapshot.hasData) {
-      return snapshot.data?.docs.isEmpty == true
-          ? const SizedBox(
-              height: 100,
-              child: NoData(text: 'Start adding Category...'),
-            )
-          : ListView.builder(
-              shrinkWrap: true,
-              itemCount: snapshot.data?.docs.length,
-              itemBuilder: (context, index) {
-                Category category =
-                    Category.fromSnapshot(snapshot.data!.docs[index]);
-                final Widget listTitle = ListTile(
-                  title: Text(
-                    category.title,
-                    style: const TextStyle(
-                      fontSize: 20.5,
-                      fontFamily: 'RobotoMono',
-                      fontWeight: FontWeight.w400,
-                    ),
+      if (snapshot.data?.isEmpty == true) {
+        return const SizedBox(
+            height: 100, child: NoData(text: 'Start adding Category...'));
+      } else {
+        return ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data?.length,
+            itemBuilder: (context, index) {
+              Category category = snapshot.data![index];
+              final Widget listTitle = ListTile(
+                title: Text(
+                  category.title,
+                  style: const TextStyle(
+                    fontSize: 20.5,
+                    fontFamily: 'RobotoMono',
+                    fontWeight: FontWeight.w400,
                   ),
-                  trailing: ElevatedButton(
-                    onPressed: () {
-                      showAlertDialog(context, category);
-                      // ignore: todo
-                      // TODO: Navigate to the next category after if current category is deleted.
-                    },
-                    child: const Icon(Icons.delete, color: primaryColor),
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(10),
-                      primary: tertiaryColor, // <-- Button color
-                    ),
+                ),
+                trailing: ElevatedButton(
+                  onPressed: () async {
+                    showAlertDialog(context, category);
+                  },
+                  child: const Icon(Icons.delete, color: primaryColor),
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(10),
+                    primary: tertiaryColor, // <-- Button color
                   ),
-                  onTap: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TodoList(
-                                currentCategory: category,
-                              ))),
-                );
+                ),
+                onTap: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TodoList(
+                              category: category,
+                            ))),
+              );
 
-                return listTitle;
-              });
+              return listTitle;
+            });
+      }
     } else {
+      categoryRepository.getCategories();
       return const Center(
         child: LoadingData(),
       );
@@ -142,13 +134,39 @@ class Sidenav extends Drawer {
     );
     Widget continueButton = TextButton(
       child: const Text('Delete'),
-      onPressed: () {
+      onPressed: () async {
         categoryRepository.deleteCategory(category.id!);
         Navigator.of(context).pop();
         Toast(
             context: context,
             message: 'Category deleted successfuly',
             type: ToastType.success);
+
+        final categories = await categoryRepository.getCategories();
+        if (categories.isEmpty) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Sidenav()));
+        } else {
+          if (categories.length > 1 &&
+              TodoList.currentCategoryId != null &&
+              category.id == TodoList.currentCategoryId) {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TodoList(
+                          category: categories.first,
+                        )));
+          } else {
+            if (categories.length == 1) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TodoList(
+                            category: categories.first,
+                          )));
+            }
+          }
+        }
       },
     );
 

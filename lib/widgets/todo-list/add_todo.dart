@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_app/shared/models/todo.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
-import 'package:flutter_to_do_app/repository/todo_firestore_repo.dart';
+import 'package:flutter_to_do_app/repository/todo_repository.dart';
 
 class AddTodo extends StatelessWidget {
   final String categoryId;
-  final TodoFireStoreRepo repository;
+  final TodoRepository repository;
 
   const AddTodo({Key? key, required this.categoryId, required this.repository})
       : super(key: key);

@@ -17,9 +17,6 @@ class Category {
       _categoryFromJson(json);
 
   Map<String, dynamic> toJson() => _categoryToJson(this);
-
-  @override
-  String toString() => 'Category<$title>';
 }
 
 Category _categoryFromJson(Map<String, dynamic> json) {

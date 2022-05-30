@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_to_do_app/ui/sidenav.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
 import 'package:flutter_to_do_app/widgets/todo-list/add_todo.dart';
 import 'package:flutter_to_do_app/shared/models/todo.dart';
@@ -10,16 +9,20 @@ import 'package:flutter_to_do_app/widgets/todo-list/search_todo.dart';
 import 'package:flutter_to_do_app/widgets/loading_data.dart';
 import 'package:flutter_to_do_app/widgets/todo-list/delete_filter.dart';
 import 'package:flutter_to_do_app/shared/models/category.dart';
-import 'package:flutter_to_do_app/repository/todo_firestore_repo.dart';
+import 'package:flutter_to_do_app/repository/todo_repository.dart';
 
 class TodoList extends StatelessWidget {
-  final Category currentCategory;
-  final TodoFireStoreRepo repository = TodoFireStoreRepo();
+  final Category category;
+  final TodoRepository todoRepository = TodoRepository();
 
   final DismissDirection _dismissDirection = DismissDirection.horizontal;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  TodoList({Key? key, required this.currentCategory}) : super(key: key);
+  static String? currentCategoryId;
+
+  TodoList({Key? key, required this.category}) : super(key: key) {
+    currentCategoryId = category.id;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +69,7 @@ class TodoList extends StatelessWidget {
                 Expanded(
                   //Text neben Burgermenu
                   child: Text(
-                    currentCategory.title,
+                    category.title,
                     style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -77,10 +80,10 @@ class TodoList extends StatelessWidget {
                 ),
                 Wrap(children: <Widget>[
                   DeleteFilter(
-                      categoryId: currentCategory.id!, repository: repository),
+                      categoryId: category.id!, repository: todoRepository),
                   SearchTodo(
-                    categoryId: currentCategory.id!,
-                    repository: repository,
+                    categoryId: category.id!,
+                    repository: todoRepository,
                   ),
                   const Padding(
                     padding: EdgeInsets.only(right: 5),
@@ -95,92 +98,95 @@ class TodoList extends StatelessWidget {
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 25),
           child: AddTodo(
-            repository: repository,
-            categoryId: currentCategory.id!,
+            repository: todoRepository,
+            categoryId: category.id!,
           ),
         ));
   }
 
   Widget getTodosWidget() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: repository.getStream(currentCategory.id!),
-      builder: (context, snapshot) {
+    return StreamBuilder(
+      stream: todoRepository.todos,
+      builder: (context, AsyncSnapshot<List<Todo>> snapshot) {
         return getTodoCardWidget(snapshot);
       },
     );
   }
 
-  Widget getTodoCardWidget(AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
+  Widget getTodoCardWidget(AsyncSnapshot<List<Todo>> snapshot) {
     if (snapshot.hasData) {
-      return snapshot.data?.docs.isEmpty == true
-          ? const NoData(text: 'Start adding Todo...')
-          : ListView.builder(
-              itemCount: snapshot.data?.docs.length,
-              itemBuilder: (context, index) {
-                Todo todo = Todo.fromSnapshot(snapshot.data!.docs[index]);
-                final Widget dismissibleCard = Dismissible(
-                  background: Container(
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Deleting',
-                          style: TextStyle(color: tertiaryColor),
-                        ),
+      if (snapshot.data?.isEmpty == true) {
+        return const NoData(text: 'Start adding Todo...');
+      } else {
+        return ListView.builder(
+          itemCount: snapshot.data?.length,
+          itemBuilder: (context, index) {
+            Todo todo = snapshot.data![index];
+            final Widget dismissibleCard = Dismissible(
+              background: Container(
+                child: const Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Deleting',
+                      style: TextStyle(color: tertiaryColor),
+                    ),
+                  ),
+                ),
+                color: primaryAccentColor,
+              ),
+              onDismissed: (direction) {
+                todoRepository.deleteTodo(category.id!, todo.id!);
+              },
+              direction: _dismissDirection,
+              key: UniqueKey(),
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(color: (shadeColor), width: 0.5),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  color: tertiaryColor,
+                  child: ListTile(
+                    leading: InkWell(
+                      onTap: () {
+                        todo.isDone = !todo.isDone;
+
+                        todoRepository.updateTodo(category.id!, todo);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: todo.isDone
+                            ? const Icon(
+                                Icons.done,
+                                size: 26.0,
+                                color: secondaryColor,
+                              )
+                            : const Icon(
+                                Icons.check_box_outline_blank,
+                                size: 26.0,
+                                color: secondaryColor,
+                              ),
                       ),
                     ),
-                    color: primaryAccentColor,
-                  ),
-                  onDismissed: (direction) {
-                    repository.deleteTodo(currentCategory.id!, todo.id!);
-                  },
-                  direction: _dismissDirection,
-                  key: UniqueKey(),
-                  child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(color: (shadeColor), width: 0.5),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      color: tertiaryColor,
-                      child: ListTile(
-                        leading: InkWell(
-                          onTap: () {
-                            todo.isDone = !todo.isDone;
-
-                            repository.updateTodo(currentCategory.id!, todo);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: todo.isDone
-                                ? const Icon(
-                                    Icons.done,
-                                    size: 26.0,
-                                    color: secondaryColor,
-                                  )
-                                : const Icon(
-                                    Icons.check_box_outline_blank,
-                                    size: 26.0,
-                                    color: secondaryColor,
-                                  ),
-                          ),
-                        ),
-                        title: Text(
-                          todo.description,
-                          style: TextStyle(
-                              fontSize: 16.5,
-                              fontFamily: 'RobotoMono',
-                              fontWeight: FontWeight.w500,
-                              decoration: todo.isDone
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none),
-                        ),
-                      )),
-                );
-                return dismissibleCard;
-              },
+                    title: Text(
+                      todo.description,
+                      style: TextStyle(
+                          fontSize: 16.5,
+                          fontFamily: 'RobotoMono',
+                          fontWeight: FontWeight.w500,
+                          decoration: todo.isDone
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none),
+                    ),
+                  )),
             );
+            return dismissibleCard;
+          },
+        );
+      }
     } else {
+      todoRepository.getTodosByCategoryId(category.id!);
       return const Center(
         child: LoadingData(),
       );

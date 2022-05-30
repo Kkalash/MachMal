@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
-import 'package:flutter_to_do_app/repository/todo_firestore_repo.dart';
+import 'package:flutter_to_do_app/repository/todo_repository.dart';
 
 class SearchTodo extends StatelessWidget {
   final String categoryId;
-  final TodoFireStoreRepo repository;
+  final TodoRepository repository;
 
   const SearchTodo(
       {Key? key, required this.categoryId, required this.repository})
