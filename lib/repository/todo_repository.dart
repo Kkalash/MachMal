@@ -18,6 +18,7 @@ class TodoRepository {
       maps.add(Todo.fromSnapshot(doc));
     }
 
+    maps.sort((todo1, todo2) => todo1.isDone ? 1 : -1);
     _todoController.sink.add(maps);
 
     return maps;

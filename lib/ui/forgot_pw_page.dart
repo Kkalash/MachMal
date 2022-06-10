@@ -16,23 +16,6 @@ class _ForgotPWPageState extends State<ForgotPWPage> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
 
-  static const labelTextStyle = TextStyle(
-    color: tertiaryColor,
-    fontSize: 30.0,
-    fontWeight: FontWeight.bold,
-  );
-
-  final boxDecorationStyle = BoxDecoration(
-    color: tertiaryColor,
-    borderRadius: BorderRadius.circular(10.0),
-    boxShadow: const [
-      BoxShadow(
-        color: Colors.black12,
-        blurRadius: 6.0,
-        offset: Offset(0, 2),
-      ),
-    ],
-  );
   @override
   void dispose() {
     super.dispose();
@@ -104,12 +87,26 @@ class _ForgotPWPageState extends State<ForgotPWPage> {
       children: <Widget>[
         const Text(
           'Email',
-          style: labelTextStyle,
+          style: TextStyle(
+            color: tertiaryColor,
+            fontSize: 30.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 10.0),
         Container(
           alignment: Alignment.centerLeft,
-          decoration: boxDecorationStyle,
+          decoration: BoxDecoration(
+            color: tertiaryColor,
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6.0,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
           height: 60.0,
           child: TextField(
               keyboardType: TextInputType.emailAddress,
@@ -147,6 +144,7 @@ class _ForgotPWPageState extends State<ForgotPWPage> {
               .resetPassword(
                   email: emailController.text.trim().toLowerCase(),
                   context: context);
+
           if (result) {
             Navigator.pop(context);
 

@@ -18,9 +18,7 @@ class DeleteFilter extends StatelessWidget {
         size: 28,
         color: primaryColor,
       ),
-      onPressed: () {
-        repository.getTodosByCategoryId(categoryId);
-      },
+      onPressed: () => repository.getTodosByCategoryId(categoryId),
     );
   }
 }

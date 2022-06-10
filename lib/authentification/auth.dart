@@ -71,6 +71,14 @@ class AuthenticationService {
     return user;
   }
 
+  Future sendVerificationEmail({required BuildContext context}) async {
+    try {
+      await _firebaseAuth.currentUser?.sendEmailVerification();
+    } on FirebaseAuthException catch (e) {
+      handelError(e, context);
+    }
+  }
+
   Future<bool> signOut() async {
     bool singedout = false;
 
@@ -137,28 +145,36 @@ class AuthenticationService {
             type: ToastType.error);
         break;
       default:
+        Toast(
+            context: context,
+            message: 'Something went wrong. Please try again',
+            type: ToastType.error);
         break;
     }
   }
 
   Future<bool> isAuthInputValid(
       String email, String password, BuildContext context) async {
+    bool isValid = true;
+
     if (email.isEmpty) {
       Toast(
           context: context,
           message: 'Please enter your email',
           type: ToastType.info);
 
-      return false;
-    } else if (password.isEmpty) {
+      isValid = false;
+    }
+
+    if (password.isEmpty) {
       Toast(
           context: context,
           message: 'Please enter a password',
           type: ToastType.info);
 
-      return false;
+      isValid = false;
     }
 
-    return true;
+    return isValid;
   }
 }

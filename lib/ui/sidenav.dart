@@ -89,14 +89,12 @@ class Sidenav extends Drawer {
                   ),
                 ),
                 trailing: ElevatedButton(
-                  onPressed: () async {
-                    showAlertDialog(context, category);
-                  },
+                  onPressed: () => showAlertDialog(context, category),
                   child: const Icon(Icons.delete, color: primaryColor),
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     padding: const EdgeInsets.all(10),
-                    primary: tertiaryColor, // <-- Button color
+                    primary: tertiaryColor,
                   ),
                 ),
                 onTap: () => Navigator.pushReplacement(
@@ -112,6 +110,7 @@ class Sidenav extends Drawer {
       }
     } else {
       categoryRepository.getCategories();
+
       return const Center(
         child: LoadingData(),
       );
@@ -125,13 +124,12 @@ class Sidenav extends Drawer {
         : const SignOut();
   }
 
-  showAlertDialog(BuildContext context, Category category) {
+  void showAlertDialog(BuildContext context, Category category) {
     Widget cancelButton = TextButton(
       child: const Text('Cancel'),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
+      onPressed: () => Navigator.of(context).pop(),
     );
+
     Widget continueButton = TextButton(
       child: const Text('Delete'),
       onPressed: () async {

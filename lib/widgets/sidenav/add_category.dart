@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:basic_utils/basic_utils.dart';
+import 'package:flutter_to_do_app/widgets/toast.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/shared/models/category.dart';
+import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class AddCategory extends StatelessWidget {
   final CategoryFirestoreRepo categoryRepository;
+  final _categoryDescriptionFormController = TextEditingController();
 
-  const AddCategory({Key? key, required this.categoryRepository})
-      : super(key: key);
+  AddCategory({Key? key, required this.categoryRepository}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +60,6 @@ class AddCategory extends StatelessWidget {
   }
 
   void addNewCategory(BuildContext context) {
-    final _categoryDescriptionFormController = TextEditingController();
-
     showModalBottomSheet(
         context: context,
         builder: (builder) {
@@ -119,19 +119,7 @@ class AddCategory extends StatelessWidget {
                                   size: 22,
                                   color: tertiaryColor,
                                 ),
-                                onPressed: () {
-                                  final newCategory = Category(
-                                      title: StringUtils.capitalize(
-                                          _categoryDescriptionFormController
-                                              .value.text
-                                              .trim()));
-
-                                  if (newCategory.title.isNotEmpty) {
-                                    categoryRepository.addCategory(newCategory);
-
-                                    Navigator.pop(context);
-                                  }
-                                },
+                                onPressed: () => addCategory(context),
                               ),
                             ),
                           )
@@ -144,5 +132,26 @@ class AddCategory extends StatelessWidget {
             ),
           );
         });
+  }
+
+  void addCategory(BuildContext context) async {
+    final newCategory = Category(
+        title: StringUtils.capitalize(
+            _categoryDescriptionFormController.value.text.trim()));
+
+    final isDuplicate = (await categoryRepository.getCategories())
+        .any((category) => category.title == newCategory.title);
+
+    if (newCategory.title.isNotEmpty && !isDuplicate) {
+      categoryRepository.addCategory(newCategory);
+
+      Navigator.pop(context);
+    } else {
+      final title = newCategory.title;
+      Toast(
+          context: context,
+          message: 'Category $title already exists!',
+          type: ToastType.warning);
+    }
   }
 }
