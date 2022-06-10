@@ -48,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+
     createBox();
   }
 
@@ -206,12 +207,12 @@ class _LoginPageState extends State<LoginPage> {
               child: Checkbox(
                 value: _rememberMe,
                 checkColor: primaryColor,
-                activeColor: tertiaryColor,
-                onChanged: (value) {
-                  _rememberMe = !_rememberMe;
+                activeColor: tertiaryColor,           
+                onChanged: (value) =>
                   setState(() {
-                  });
-                },
+                  _rememberMe = !_rememberMe;
+                  })
+                ,
               )),
           const Text('Remember me',
               style:
@@ -234,24 +235,7 @@ class _LoginPageState extends State<LoginPage> {
       width: double.infinity,
       child: ElevatedButton(
         style: style,
-        onPressed: () async {
-          User? user = await context.read<AuthenticationService>().login(
-              email: emailController.text.trim().toLowerCase(),
-              password: passwordController.text.trim()
-              context: context);
-
-          if(user != null) {
-           rememberUser();
-              
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => Sidenav()));
-                
-            Toast(
-                context: context,
-                message: 'Login Successful',
-                type: ToastType.success);
-          }
-        },
+        onPressed: () => login(),
         child: const Text(
           'LOGIN',
           style: TextStyle(
@@ -357,5 +341,31 @@ class _LoginPageState extends State<LoginPage> {
         box.delete('email');
         box.delete('password');
       }
+  }
+
+  void login() async {
+              User? user = await context.read<AuthenticationService>().login(
+              email: emailController.text.trim().toLowerCase(),
+              password: passwordController.text.trim()
+              context: context);
+
+          if(user != null) {
+           rememberUser();
+
+           if (user.emailVerified) {    
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => Sidenav()));
+                
+            Toast(
+                context: context,
+                message: 'Login Successful',
+                type: ToastType.success);
+          } else {
+            Toast(
+                context: context,
+                message: 'Please verify your email',
+                type: ToastType.info);
+                }
+           }
   }
 }

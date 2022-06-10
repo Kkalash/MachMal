@@ -14,9 +14,7 @@ class AddTodo extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       elevation: 5.0,
-      onPressed: () {
-        _showAddTodoSheet(context);
-      },
+      onPressed: () => _showAddTodoSheet(context),
       backgroundColor: primaryColor,
       child: const Icon(
         Icons.add,
@@ -28,6 +26,7 @@ class AddTodo extends StatelessWidget {
 
   void _showAddTodoSheet(BuildContext context) {
     final _todoDescriptionFormController = TextEditingController();
+
     showModalBottomSheet(
         context: context,
         builder: (builder) {

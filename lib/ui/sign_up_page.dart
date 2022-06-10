@@ -201,29 +201,7 @@ class _SignUpPageState extends State<SignUpPage> {
       width: double.infinity,
       child: ElevatedButton(
         style: style,
-        onPressed: () async {
-          if (passwordController.text != confirmPasswordController.text) {
-            Toast(
-                context: context,
-                message: 'Passwords do not match',
-                type: ToastType.error);
-            return;
-          }
-
-          User? user = await context.read<AuthenticationService>().signUp(
-              email: emailController.text.trim().toLowerCase(),
-              password: passwordController.text.trim(),
-              context: context);
-
-          if (user != null) {
-            Navigator.pop(context);
-
-            Toast(
-                context: context,
-                message: 'Singup Successful',
-                type: ToastType.success);
-          }
-        },
+        onPressed: () => signup(),
         child: const Text(
           'SIGN UP',
           style: TextStyle(
@@ -235,5 +213,32 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  void signup() async {
+    if (passwordController.text != confirmPasswordController.text) {
+      Toast(
+          context: context,
+          message: 'Passwords do not match',
+          type: ToastType.error);
+      return;
+    }
+
+    User? user = await context.read<AuthenticationService>().signUp(
+        email: emailController.text.trim().toLowerCase(),
+        password: passwordController.text.trim(),
+        context: context);
+
+    if (user != null) {
+      await context
+          .read<AuthenticationService>()
+          .sendVerificationEmail(context: context);
+      Navigator.pop(context);
+
+      Toast(
+          context: context,
+          message: 'Verification email sent. Please check your email.',
+          type: ToastType.info);
+    }
   }
 }

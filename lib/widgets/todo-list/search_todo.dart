@@ -18,14 +18,13 @@ class SearchTodo extends StatelessWidget {
         size: 28,
         color: primaryColor,
       ),
-      onPressed: () {
-        _showTodoSearchSheet(context);
-      },
+      onPressed: () => _showTodoSearchSheet(context),
     );
   }
 
   void _showTodoSearchSheet(BuildContext context) {
     final _todoSearchDescriptionFormController = TextEditingController();
+
     showModalBottomSheet(
         context: context,
         builder: (builder) {

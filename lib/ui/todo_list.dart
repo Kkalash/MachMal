@@ -31,6 +31,9 @@ class TodoList extends StatelessWidget {
         systemNavigationBarColor: tertiaryColor,
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.dark));
+
+    const borderSide = BorderSide(color: shadeColor, width: 0.3);
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         key: _scaffoldKey,
@@ -46,30 +49,27 @@ class TodoList extends StatelessWidget {
           child: Container(
             decoration: const BoxDecoration(
                 border: Border(
-              top: BorderSide(color: shadeColor, width: 0.3),
-              bottom: BorderSide(color: shadeColor, width: 0.3),
+              top: borderSide,
+              bottom: borderSide,
             )),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 IconButton(
                     icon: const Icon(
-                      // Burgermenue Button
                       Icons.menu,
                       color: primaryColor,
                       size: 28,
                     ),
-                    onPressed: () {
-                      _scaffoldKey.currentState?.openDrawer();
-                    }),
+                    onPressed: () => _scaffoldKey.currentState?.openDrawer()),
                 Expanded(
                   child: Text(
                     category.title,
                     style: const TextStyle(
-                        color: Colors.black,
+                        color: Colors.black38,
                         fontWeight: FontWeight.w600,
                         fontFamily: 'RobotoMono',
-                        fontStyle: FontStyle.normal,
+                        fontStyle: FontStyle.italic,
                         fontSize: 19),
                   ),
                 ),
@@ -130,9 +130,8 @@ class TodoList extends StatelessWidget {
                 ),
                 color: primaryAccentColor,
               ),
-              onDismissed: (direction) {
-                todoRepository.deleteTodo(category.id!, todo.id!);
-              },
+              onDismissed: (direction) =>
+                  todoRepository.deleteTodo(category.id!, todo.id!),
               direction: _dismissDirection,
               key: UniqueKey(),
               child: Card(
@@ -181,6 +180,7 @@ class TodoList extends StatelessWidget {
       }
     } else {
       todoRepository.getTodosByCategoryId(category.id!);
+
       return const Center(
         child: LoadingData(),
       );
