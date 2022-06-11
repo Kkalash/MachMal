@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_to_do_app/ui/todo_list.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
+import 'package:flutter_to_do_app/ui/todo_list_page.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/widgets/loading_data.dart';
 import 'package:flutter_to_do_app/widgets/sidenav/about.dart';
@@ -15,10 +15,15 @@ import 'package:flutter_to_do_app/widgets/sidenav/add_category.dart';
 import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 import 'package:flutter_to_do_app/repository/category_repository.dart';
 
-class Sidenav extends Drawer {
-  final CategoryFirestoreRepo categoryRepository = CategoryFirestoreRepo();
+class Sidenav extends StatefulWidget {
+  const Sidenav({Key? key}) : super(key: key);
 
-  Sidenav({Key? key}) : super(key: key);
+  @override
+  _SindnavState createState() => _SindnavState();
+}
+
+class _SindnavState extends State<Sidenav> {
+  final CategoryFirestoreRepo categoryRepository = CategoryFirestoreRepo();
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +89,7 @@ class Sidenav extends Drawer {
                   category.title,
                   style: const TextStyle(
                     fontSize: 20.5,
-                    fontFamily: 'RobotoMono',
+                    fontFamily: fontFamilyRaleway,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -100,7 +105,7 @@ class Sidenav extends Drawer {
                 onTap: () => Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => TodoList(
+                        builder: (context) => TodoListPage(
                               category: category,
                             ))),
               );
@@ -142,16 +147,16 @@ class Sidenav extends Drawer {
 
         final categories = await categoryRepository.getCategories();
         if (categories.isEmpty) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => Sidenav()));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const Sidenav()));
         } else {
           if (categories.length > 1 &&
-              TodoList.currentCategoryId != null &&
-              category.id == TodoList.currentCategoryId) {
+              TodoListPage.currentCategoryId != null &&
+              category.id == TodoListPage.currentCategoryId) {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => TodoList(
+                    builder: (context) => TodoListPage(
                           category: categories.first,
                         )));
           } else {
@@ -159,7 +164,7 @@ class Sidenav extends Drawer {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => TodoList(
+                      builder: (context) => TodoListPage(
                             category: categories.first,
                           )));
             }
@@ -169,15 +174,30 @@ class Sidenav extends Drawer {
     );
 
     AlertDialog alert = AlertDialog(
-      title: Row(
-        children: [
-          const Text('Delete '),
-          Text(StringUtils.capitalize(category.title),
-              style: const TextStyle(
-                  fontWeight: FontWeight.w500, color: primaryColor)),
-        ],
+      title: RichText(
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+        softWrap: true,
+        text: TextSpan(
+          text: 'Delete ',
+          style: const TextStyle(
+            fontSize: 20.5,
+            color: Colors.black,
+            fontWeight: FontWeight.w500,
+          ),
+          children: [
+            TextSpan(
+              text: StringUtils.capitalize(category.title),
+              style: const TextStyle(color: primaryColor),
+            ),
+          ],
+        ),
       ),
-      content: const Text('Would you like to delete this category?'),
+      content: const Text('Would you like to delete this category?',
+          style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16.5,
+              fontFamily: fontFamilyRaleway)),
       actions: [
         cancelButton,
         continueButton,

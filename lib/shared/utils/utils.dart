@@ -5,6 +5,7 @@ const Color primaryAccentColor = Color(0xFFBC4639);
 const Color secondaryColor = Color(0xFFBC4639);
 const Color shadeColor = Color(0xFFD4A59A);
 const Color tertiaryColor = Color.fromARGB(255, 248, 234, 231);
+const String fontFamilyRaleway = 'Raleway';
 
 MaterialColor createMaterialColor(Color color) {
   List strengths = <double>[.05];
@@ -23,5 +24,6 @@ MaterialColor createMaterialColor(Color color) {
       1,
     );
   }
+
   return MaterialColor(color.value, swatch);
 }

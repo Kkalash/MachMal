@@ -8,9 +8,9 @@ import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class AddCategory extends StatelessWidget {
   final CategoryFirestoreRepo categoryRepository;
-  final _categoryDescriptionFormController = TextEditingController();
 
-  AddCategory({Key? key, required this.categoryRepository}) : super(key: key);
+  const AddCategory({Key? key, required this.categoryRepository})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +60,11 @@ class AddCategory extends StatelessWidget {
   }
 
   void addNewCategory(BuildContext context) {
+    final descriptionController = TextEditingController();
+
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (builder) {
           return Padding(
             padding: EdgeInsets.only(
@@ -69,7 +72,7 @@ class AddCategory extends StatelessWidget {
             child: Container(
               color: Colors.transparent,
               child: Container(
-                height: 230,
+                height: 150,
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -86,9 +89,9 @@ class AddCategory extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                             child: TextFormField(
-                              controller: _categoryDescriptionFormController,
+                              controller: descriptionController,
                               textInputAction: TextInputAction.newline,
-                              maxLines: 4,
+                              maxLines: 2,
                               style: const TextStyle(
                                   fontSize: 21, fontWeight: FontWeight.w400),
                               autofocus: true,
@@ -119,7 +122,8 @@ class AddCategory extends StatelessWidget {
                                   size: 22,
                                   color: tertiaryColor,
                                 ),
-                                onPressed: () => addCategory(context),
+                                onPressed: () => addCategory(context,
+                                    descriptionController.value.text.trim()),
                               ),
                             ),
                           )
@@ -134,10 +138,8 @@ class AddCategory extends StatelessWidget {
         });
   }
 
-  void addCategory(BuildContext context) async {
-    final newCategory = Category(
-        title: StringUtils.capitalize(
-            _categoryDescriptionFormController.value.text.trim()));
+  void addCategory(BuildContext context, String description) async {
+    final newCategory = Category(title: StringUtils.capitalize(description));
 
     final isDuplicate = (await categoryRepository.getCategories())
         .any((category) => category.title == newCategory.title);

@@ -42,7 +42,7 @@ class ToDoApp extends StatelessWidget {
 
   Widget _getHomePageOrLogin() {
     return FirebaseAuth.instance.currentUser != null
-        ? Sidenav()
+        ? const Sidenav()
         : const LoginPage();
   }
 }

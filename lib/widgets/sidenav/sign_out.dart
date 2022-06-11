@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_to_do_app/ui/login_page.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/authentification/auth.dart';
 import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 
@@ -21,7 +22,7 @@ class SignOut extends StatelessWidget {
             'Sign Out',
             style: TextStyle(
               fontSize: 20.5,
-              fontFamily: 'RobotoMono',
+              fontFamily: fontFamilyRaleway,
               fontWeight: FontWeight.w400,
               color: Colors.red,
             ),

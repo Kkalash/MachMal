@@ -18,7 +18,7 @@ class Login extends StatelessWidget {
             'Login',
             style: TextStyle(
               fontSize: 20.5,
-              fontFamily: 'RobotoMono',
+              fontFamily: fontFamilyRaleway,
               fontWeight: FontWeight.w400,
             ),
           ),

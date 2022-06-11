@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_to_do_app/shared/utils/utils.dart';
 
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);
@@ -10,7 +11,7 @@ class Settings extends StatelessWidget {
           'Settings',
           style: TextStyle(
             fontSize: 20.5,
-            fontFamily: 'RobotoMono',
+            fontFamily: fontFamilyRaleway,
             fontWeight: FontWeight.w400,
           ),
         ),

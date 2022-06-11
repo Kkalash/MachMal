@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_to_do_app/widgets/auth/button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/authentification/auth.dart';
+import 'package:flutter_to_do_app/widgets/auth/input_field.dart';
 import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 
 class ForgotPWPage extends StatefulWidget {
@@ -69,8 +71,14 @@ class _ForgotPWPageState extends State<ForgotPWPage> {
                     ),
                   ),
                   const SizedBox(height: 30.0),
-                  _buildEmailTF(),
-                  _buildResetPWBtn()
+                  InputField(
+                      label: 'Email',
+                      hint: 'example@gmail.com',
+                      inputController: emailController,
+                      isEmail: true,
+                      icon: Icons.email),
+                  Button(
+                      text: 'RESET PASSWORD', onPressed: () => resetPassowrd()),
                 ],
               ),
             ),
@@ -80,90 +88,17 @@ class _ForgotPWPageState extends State<ForgotPWPage> {
     );
   }
 
-  Widget _buildEmailTF() {
-    const textStyle = TextStyle(color: primaryAccentColor);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Email',
-          style: TextStyle(
-            color: tertiaryColor,
-            fontSize: 30.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-            color: tertiaryColor,
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 6.0,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          height: 60.0,
-          child: TextField(
-              keyboardType: TextInputType.emailAddress,
-              controller: emailController,
-              style: textStyle,
-              decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(Icons.email, color: primaryAccentColor),
-                  hintText: 'Enter your Email',
-                  hintStyle: TextStyle(
-                    color: shadeColor,
-                  ))),
-        ),
-      ],
-    );
-  }
+  void resetPassowrd() async {
+    bool result = await context.read<AuthenticationService>().resetPassword(
+        email: emailController.text.trim().toLowerCase(), context: context);
 
-  Widget _buildResetPWBtn() {
-    final ButtonStyle style = ElevatedButton.styleFrom(
-        elevation: 5.0,
-        padding: const EdgeInsets.all(15.0),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        primary: tertiaryColor);
+    if (result) {
+      Navigator.pop(context);
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 25.0),
-      width: double.infinity,
-      child: ElevatedButton(
-        style: style,
-        onPressed: () async {
-          bool result = await context
-              .read<AuthenticationService>()
-              .resetPassword(
-                  email: emailController.text.trim().toLowerCase(),
-                  context: context);
-
-          if (result) {
-            Navigator.pop(context);
-
-            Toast(
-                context: context,
-                message: 'Email sent successfully',
-                type: ToastType.success);
-          }
-        },
-        child: const Text(
-          'RESET PASSWORD',
-          style: TextStyle(
-            color: primaryAccentColor,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
+      Toast(
+          context: context,
+          message: 'Email sent successfully',
+          type: ToastType.success);
+    }
   }
 }
