@@ -11,16 +11,14 @@ import 'package:flutter_to_do_app/repository/todo_repository.dart';
 import 'package:flutter_to_do_app/widgets/todo-list/search_todo.dart';
 import 'package:flutter_to_do_app/widgets/todo-list/delete_filter.dart';
 
-class TodoList extends StatelessWidget {
+class TodoListPage extends StatelessWidget {
   final Category category;
   final TodoRepository todoRepository = TodoRepository();
-
-  final DismissDirection _dismissDirection = DismissDirection.horizontal;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   static String? currentCategoryId;
 
-  TodoList({Key? key, required this.category}) : super(key: key) {
+  TodoListPage({Key? key, required this.category}) : super(key: key) {
     currentCategoryId = category.id;
   }
 
@@ -43,7 +41,7 @@ class TodoList extends StatelessWidget {
                 padding:
                     const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0),
                 child: Container(child: getTodosWidget()))),
-        drawer: Sidenav(),
+        drawer: const Sidenav(),
         bottomNavigationBar: BottomAppBar(
           color: tertiaryColor,
           child: Container(
@@ -68,7 +66,7 @@ class TodoList extends StatelessWidget {
                     style: const TextStyle(
                         color: Colors.black38,
                         fontWeight: FontWeight.w600,
-                        fontFamily: 'RobotoMono',
+                        fontFamily: fontFamilyRaleway,
                         fontStyle: FontStyle.italic,
                         fontSize: 19),
                   ),
@@ -132,7 +130,7 @@ class TodoList extends StatelessWidget {
               ),
               onDismissed: (direction) =>
                   todoRepository.deleteTodo(category.id!, todo.id!),
-              direction: _dismissDirection,
+              direction: DismissDirection.horizontal,
               key: UniqueKey(),
               child: Card(
                   shape: RoundedRectangleBorder(
@@ -166,7 +164,7 @@ class TodoList extends StatelessWidget {
                       todo.description,
                       style: TextStyle(
                           fontSize: 16.5,
-                          fontFamily: 'RobotoMono',
+                          fontFamily: fontFamilyRaleway,
                           fontWeight: FontWeight.w500,
                           decoration: todo.isDone
                               ? TextDecoration.lineThrough

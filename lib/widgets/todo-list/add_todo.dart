@@ -25,10 +25,11 @@ class AddTodo extends StatelessWidget {
   }
 
   void _showAddTodoSheet(BuildContext context) {
-    final _todoDescriptionFormController = TextEditingController();
+    final todoDescriptionController = TextEditingController();
 
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (builder) {
           return Padding(
             padding: EdgeInsets.only(
@@ -53,7 +54,7 @@ class AddTodo extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                             child: TextFormField(
-                              controller: _todoDescriptionFormController,
+                              controller: todoDescriptionController,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
                               style: const TextStyle(
@@ -88,10 +89,9 @@ class AddTodo extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   final newTodo = Todo(
-                                      description:
-                                          _todoDescriptionFormController
-                                              .value.text
-                                              .trim());
+                                      description: todoDescriptionController
+                                          .value.text
+                                          .trim());
 
                                   if (newTodo.description.isNotEmpty) {
                                     repository.addTodo(categoryId, newTodo);

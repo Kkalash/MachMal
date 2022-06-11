@@ -9,7 +9,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
 import 'package:flutter_to_do_app/ui/sign_up_page.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
+import 'package:flutter_to_do_app/widgets/auth/button.dart';
 import 'package:flutter_to_do_app/authentification/auth.dart';
+import 'package:flutter_to_do_app/widgets/auth/input_field.dart';
 import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,25 +24,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  
-
-  final boxDecorationStyle = BoxDecoration(
-    color: tertiaryColor,
-    borderRadius: BorderRadius.circular(10.0),
-    boxShadow: const [
-      BoxShadow(
-        color: Colors.black12,
-        blurRadius: 6.0,
-        offset: Offset(0, 2),
-      ),
-    ],
-  );
-
-  static const labelTextStyle = TextStyle(
-    color: tertiaryColor,
-    fontSize: 30.0,
-    fontWeight: FontWeight.bold,
-  );
 
   bool _rememberMe = false;
   late Box box;
@@ -58,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
     
     emailController.dispose();
     passwordController.dispose();
-
   }
 
   @override
@@ -107,15 +89,36 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 30.0),
-                  _buildEmailTF(),
+                  InputField(
+                      label: 'Email',
+                      hint: 'example@gmail.com',
+                      inputController: emailController,
+                      isEmail: true,
+                      icon: Icons.email),
                   const SizedBox(height: 30.0),
-                  _buildPasswordTF(),
-                  _buildForgotPwBtn(),
-                  _buildRememberMe(),
-                  _buildLoginBtn(),
-                  _buildSignupBtn(),
-                  _buildOrText(),
-                  _buildForwardWithoutLoginBtn(),
+                  InputField(
+                      label: 'Password',
+                      hint: 'Enter your Password',
+                      inputController: passwordController,
+                      isPassword: true,
+                      icon: Icons.lock),
+                  forgotPwBtn(),
+                  rememberMe(),
+                  Button(text: 'LOGIN', onPressed: () => login()),
+                  signupBtn(),
+                  Container(
+      alignment: Alignment.bottomCenter,
+      child: const Text(
+        'Or',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18.0,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ),
+                  forwardWithoutLoginBtn(),
                 ],
               ),
               
@@ -126,65 +129,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildEmailTF() {
-    const textStyle = TextStyle(color: primaryAccentColor);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Email',
-          style: labelTextStyle,
-        ),
-        const SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: boxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-              keyboardType: TextInputType.emailAddress,
-              controller: emailController,
-              style: textStyle,
-              decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(Icons.email, color: primaryAccentColor),
-                  hintText: 'example@gmail.com',
-                  hintStyle: TextStyle(
-                    color: shadeColor,
-                  ))),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPasswordTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Password',
-          style: labelTextStyle,
-        ),
-        const SizedBox(height: 10.0),
-        Container(
-            alignment: Alignment.centerLeft,
-            decoration: boxDecorationStyle,
-            height: 60.0,
-            child: TextField(
-                obscureText: true,
-                controller: passwordController,
-                decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(top: 14.0),
-                    prefixIcon: Icon(Icons.lock, color: primaryAccentColor),
-                    hintText: 'Enter your Password',
-                    hintStyle: TextStyle(color: shadeColor)))),
-      ],
-    );
-  }
-
-  Widget _buildForgotPwBtn() {
+  Widget forgotPwBtn() {
     return Container(
         alignment: Alignment.centerRight,
         child: TextButton(
@@ -197,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _buildRememberMe() {
+  Widget rememberMe() {
     return SizedBox(
       height: 20.0,
       child: Row(
@@ -222,34 +167,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildLoginBtn() {
-    final ButtonStyle style = ElevatedButton.styleFrom(
-        elevation: 5.0,
-        padding: const EdgeInsets.all(15.0),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        primary: tertiaryColor);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 25.0),
-      width: double.infinity,
-      child: ElevatedButton(
-        style: style,
-        onPressed: () => login(),
-        child: const Text(
-          'LOGIN',
-          style: TextStyle(
-            color: primaryAccentColor,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSignupBtn() {
+  Widget signupBtn() {
     return GestureDetector(
       child: RichText(
         text: TextSpan(
@@ -278,22 +196,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildOrText() {
-    return Container(
-      alignment: Alignment.bottomCenter,
-      child: const Text(
-        'Or',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18.0,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildForwardWithoutLoginBtn() {
+  Widget forwardWithoutLoginBtn() {
     return Container(
         alignment: Alignment.topCenter,
         child: TextButton(
@@ -302,8 +205,8 @@ class _LoginPageState extends State<LoginPage> {
               .singInAnonym(context: context);
 
           if(user != null) {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => Sidenav()));
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const Sidenav()));
           }
           },
           child: const Text(
@@ -344,28 +247,28 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login() async {
-              User? user = await context.read<AuthenticationService>().login(
-              email: emailController.text.trim().toLowerCase(),
-              password: passwordController.text.trim()
-              context: context);
+    User? user = await context.read<AuthenticationService>().login(
+      email: emailController.text.trim().toLowerCase(),
+      password: passwordController.text.trim()
+      context: context);
 
-          if(user != null) {
-           rememberUser();
+    if(user != null) {
+      rememberUser();
 
-           if (user.emailVerified) {    
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => Sidenav()));
+      if (user.emailVerified) {    
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const Sidenav()));
                 
-            Toast(
-                context: context,
-                message: 'Login Successful',
-                type: ToastType.success);
-          } else {
-            Toast(
-                context: context,
-                message: 'Please verify your email',
-                type: ToastType.info);
-                }
-           }
+        Toast(
+          context: context,
+          message: 'Login Successful',
+          type: ToastType.success);
+        } else {
+          Toast(
+            context: context,
+            message: 'Please verify your email',
+            type: ToastType.info);
+          }
+     }
   }
 }

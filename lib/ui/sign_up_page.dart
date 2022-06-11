@@ -1,9 +1,12 @@
+import 'package:flutter_to_do_app/widgets/auth/button.dart';
+
 import '../authentification/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
+import 'package:flutter_to_do_app/widgets/auth/input_field.dart';
 import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -19,30 +22,13 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  final boxDecorationStyle = BoxDecoration(
-    color: tertiaryColor,
-    borderRadius: BorderRadius.circular(10.0),
-    boxShadow: const [
-      BoxShadow(
-        color: Colors.black12,
-        blurRadius: 6.0,
-        offset: Offset(0, 2),
-      ),
-    ],
-  );
-
-  static const labelTextStyle = TextStyle(
-    color: tertiaryColor,
-    fontSize: 30.0,
-    fontWeight: FontWeight.bold,
-  );
-
   @override
   void dispose() {
     super.dispose();
 
     emailController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
   }
 
   @override
@@ -91,126 +77,32 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   const SizedBox(height: 30.0),
-                  _buildEmailTF(),
+                  InputField(
+                      label: 'Email',
+                      hint: 'example@gmail.com',
+                      inputController: emailController,
+                      isEmail: true,
+                      icon: Icons.email),
                   const SizedBox(height: 30.0),
-                  _buildPasswordTF(),
+                  InputField(
+                      label: 'Password',
+                      hint: 'Enter your Password',
+                      inputController: passwordController,
+                      isPassword: true,
+                      icon: Icons.lock),
                   const SizedBox(height: 30.0),
-                  _buildConfirmPasswordTF(),
-                  _buildSignUpBtn()
+                  InputField(
+                      label: 'Confirm Password',
+                      hint: 'Enter your Password',
+                      inputController: confirmPasswordController,
+                      isPassword: true,
+                      icon: Icons.lock),
+                  Button(text: 'SIGN UP', onPressed: () => signup())
                 ],
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildEmailTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Email',
-          style: labelTextStyle,
-        ),
-        const SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: boxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-              keyboardType: TextInputType.emailAddress,
-              controller: emailController,
-              style: const TextStyle(color: primaryAccentColor),
-              decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(Icons.email, color: primaryAccentColor),
-                  hintText: 'example@gmail.com',
-                  hintStyle: TextStyle(
-                    color: shadeColor,
-                  ))),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPasswordTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Password',
-          style: labelTextStyle,
-        ),
-        const SizedBox(height: 10.0),
-        Container(
-            alignment: Alignment.centerLeft,
-            decoration: boxDecorationStyle,
-            height: 60.0,
-            child: TextField(
-                obscureText: true,
-                controller: passwordController,
-                decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(top: 14.0),
-                    prefixIcon: Icon(Icons.lock, color: primaryAccentColor),
-                    hintText: 'Enter your Password',
-                    hintStyle: TextStyle(color: shadeColor)))),
-      ],
-    );
-  }
-
-  Widget _buildConfirmPasswordTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Confirm Password',
-          style: labelTextStyle,
-        ),
-        const SizedBox(height: 10.0),
-        Container(
-            alignment: Alignment.centerLeft,
-            decoration: boxDecorationStyle,
-            height: 60.0,
-            child: TextField(
-                obscureText: true,
-                controller: confirmPasswordController,
-                decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(top: 14.0),
-                    prefixIcon: Icon(Icons.lock, color: primaryAccentColor),
-                    hintText: 'Enter your Password',
-                    hintStyle: TextStyle(color: shadeColor)))),
-      ],
-    );
-  }
-
-  Widget _buildSignUpBtn() {
-    final ButtonStyle style = ElevatedButton.styleFrom(
-        elevation: 5.0,
-        padding: const EdgeInsets.all(15.0),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        primary: tertiaryColor);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 25.0),
-      width: double.infinity,
-      child: ElevatedButton(
-        style: style,
-        onPressed: () => signup(),
-        child: const Text(
-          'SIGN UP',
-          style: TextStyle(
-            color: primaryAccentColor,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
       ),
     );
   }
