@@ -11,14 +11,14 @@ import 'package:flutter_to_do_app/repository/todo_repository.dart';
 import 'package:flutter_to_do_app/widgets/todo-list/search_todo.dart';
 import 'package:flutter_to_do_app/widgets/todo-list/delete_filter.dart';
 
-class TodoListPage extends StatelessWidget {
+class ItemsListPage extends StatelessWidget {
   final Category category;
   final TodoRepository todoRepository = TodoRepository();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   static String? currentCategoryId;
 
-  TodoListPage({Key? key, required this.category}) : super(key: key) {
+  ItemsListPage({Key? key, required this.category}) : super(key: key) {
     currentCategoryId = category.id;
   }
 
