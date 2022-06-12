@@ -3,7 +3,7 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_to_do_app/widgets/toast.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
-import 'package:flutter_to_do_app/ui/todo_list_page.dart';
+import 'package:flutter_to_do_app/ui/items_list_page.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/widgets/loading_data.dart';
 import 'package:flutter_to_do_app/widgets/sidenav/about.dart';
@@ -16,7 +16,9 @@ import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class Sidenav extends StatefulWidget {
-  const Sidenav({Key? key}) : super(key: key);
+  final BuildContext? context;
+
+  const Sidenav({Key? key, this.context}) : super(key: key);
 
   @override
   _SindnavState createState() => _SindnavState();
@@ -27,6 +29,10 @@ class _SindnavState extends State<Sidenav> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.context != null) {
+      context = widget.context!;
+    }
+
     return Drawer(
       backgroundColor: tertiaryColor,
       child: ListView(
@@ -47,6 +53,7 @@ class _SindnavState extends State<Sidenav> {
             ),
           ),
           AddCategory(
+            context: context,
             categoryRepository: categoryRepository,
           ),
           getCategoriesWidget(),
@@ -105,7 +112,7 @@ class _SindnavState extends State<Sidenav> {
                 onTap: () => Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => TodoListPage(
+                        builder: (context) => ItemsListPage(
                               category: category,
                             ))),
               );
@@ -151,12 +158,12 @@ class _SindnavState extends State<Sidenav> {
               MaterialPageRoute(builder: (context) => const Sidenav()));
         } else {
           if (categories.length > 1 &&
-              TodoListPage.currentCategoryId != null &&
-              category.id == TodoListPage.currentCategoryId) {
+              ItemsListPage.currentCategoryId != null &&
+              category.id == ItemsListPage.currentCategoryId) {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => TodoListPage(
+                    builder: (context) => ItemsListPage(
                           category: categories.first,
                         )));
           } else {
@@ -164,7 +171,7 @@ class _SindnavState extends State<Sidenav> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => TodoListPage(
+                      builder: (context) => ItemsListPage(
                             category: categories.first,
                           )));
             }

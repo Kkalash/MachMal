@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_to_do_app/ui/sidenav.dart';
 import 'package:flutter_to_do_app/widgets/no_data.dart';
-import 'package:flutter_to_do_app/shared/models/todo.dart';
+import 'package:flutter_to_do_app/shared/models/item.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
 import 'package:flutter_to_do_app/widgets/loading_data.dart';
 import 'package:flutter_to_do_app/shared/models/category.dart';
-import 'package:flutter_to_do_app/widgets/todo-list/add_todo.dart';
-import 'package:flutter_to_do_app/repository/todo_repository.dart';
-import 'package:flutter_to_do_app/widgets/todo-list/search_todo.dart';
-import 'package:flutter_to_do_app/widgets/todo-list/delete_filter.dart';
+import 'package:flutter_to_do_app/repository/item_repository.dart';
+import 'package:flutter_to_do_app/widgets/items-list/add_item.dart';
+import 'package:flutter_to_do_app/widgets/items-list/search_item.dart';
+import 'package:flutter_to_do_app/widgets/items-list/delete_filter.dart';
 
-class TodoListPage extends StatelessWidget {
+class ItemsListPage extends StatelessWidget {
   final Category category;
-  final TodoRepository todoRepository = TodoRepository();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final ItemRepository itemRepository = ItemRepository();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   static String? currentCategoryId;
 
-  TodoListPage({Key? key, required this.category}) : super(key: key) {
+  ItemsListPage({Key? key, required this.category}) : super(key: key) {
     currentCategoryId = category.id;
   }
 
@@ -34,14 +34,14 @@ class TodoListPage extends StatelessWidget {
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        key: _scaffoldKey,
+        key: scaffoldKey,
         body: SafeArea(
             child: Container(
                 color: tertiaryColor,
                 padding:
                     const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0),
-                child: Container(child: getTodosWidget()))),
-        drawer: const Sidenav(),
+                child: Container(child: getItemsWidget()))),
+        drawer: Sidenav(context: context),
         bottomNavigationBar: BottomAppBar(
           color: tertiaryColor,
           child: Container(
@@ -59,7 +59,7 @@ class TodoListPage extends StatelessWidget {
                       color: primaryColor,
                       size: 28,
                     ),
-                    onPressed: () => _scaffoldKey.currentState?.openDrawer()),
+                    onPressed: () => scaffoldKey.currentState?.openDrawer()),
                 Expanded(
                   child: Text(
                     category.title,
@@ -73,10 +73,11 @@ class TodoListPage extends StatelessWidget {
                 ),
                 Wrap(children: <Widget>[
                   DeleteFilter(
-                      categoryId: category.id!, repository: todoRepository),
-                  SearchTodo(
+                      categoryId: category.id!, repository: itemRepository),
+                  SearchItem(
+                    context: context,
                     categoryId: category.id!,
-                    repository: todoRepository,
+                    repository: itemRepository,
                   ),
                   const Padding(
                     padding: EdgeInsets.only(right: 5),
@@ -89,31 +90,32 @@ class TodoListPage extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 25),
-          child: AddTodo(
-            repository: todoRepository,
+          child: AddItem(
+            context: context,
+            repository: itemRepository,
             categoryId: category.id!,
           ),
         ));
   }
 
-  Widget getTodosWidget() {
+  Widget getItemsWidget() {
     return StreamBuilder(
-      stream: todoRepository.todos,
-      builder: (context, AsyncSnapshot<List<Todo>> snapshot) {
-        return getTodoCardWidget(snapshot);
+      stream: itemRepository.items,
+      builder: (context, AsyncSnapshot<List<Item>> snapshot) {
+        return getItemCardWidget(snapshot);
       },
     );
   }
 
-  Widget getTodoCardWidget(AsyncSnapshot<List<Todo>> snapshot) {
+  Widget getItemCardWidget(AsyncSnapshot<List<Item>> snapshot) {
     if (snapshot.hasData) {
       if (snapshot.data?.isEmpty == true) {
-        return const NoData(text: 'Start adding Todo...');
+        return const NoData(text: 'Start adding Item...');
       } else {
         return ListView.builder(
           itemCount: snapshot.data?.length,
           itemBuilder: (context, index) {
-            Todo todo = snapshot.data![index];
+            Item item = snapshot.data![index];
             final Widget dismissibleCard = Dismissible(
               background: Container(
                 child: const Padding(
@@ -129,7 +131,7 @@ class TodoListPage extends StatelessWidget {
                 color: primaryAccentColor,
               ),
               onDismissed: (direction) =>
-                  todoRepository.deleteTodo(category.id!, todo.id!),
+                  itemRepository.deleteItem(category.id!, item.id!),
               direction: DismissDirection.horizontal,
               key: UniqueKey(),
               child: Card(
@@ -141,13 +143,13 @@ class TodoListPage extends StatelessWidget {
                   child: ListTile(
                     leading: InkWell(
                       onTap: () {
-                        todo.isDone = !todo.isDone;
+                        item.isDone = !item.isDone;
 
-                        todoRepository.updateTodo(category.id!, todo);
+                        itemRepository.updateItem(category.id!, item);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
-                        child: todo.isDone
+                        child: item.isDone
                             ? const Icon(
                                 Icons.done,
                                 size: 26.0,
@@ -161,12 +163,12 @@ class TodoListPage extends StatelessWidget {
                       ),
                     ),
                     title: Text(
-                      todo.description,
+                      item.description,
                       style: TextStyle(
                           fontSize: 16.5,
                           fontFamily: fontFamilyRaleway,
                           fontWeight: FontWeight.w500,
-                          decoration: todo.isDone
+                          decoration: item.isDone
                               ? TextDecoration.lineThrough
                               : TextDecoration.none),
                     ),
@@ -177,7 +179,7 @@ class TodoListPage extends StatelessWidget {
         );
       }
     } else {
-      todoRepository.getTodosByCategoryId(category.id!);
+      itemRepository.getItemsByCategoryId(category.id!);
 
       return const Center(
         child: LoadingData(),

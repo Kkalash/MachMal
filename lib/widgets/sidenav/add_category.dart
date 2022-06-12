@@ -6,19 +6,37 @@ import 'package:flutter_to_do_app/shared/models/category.dart';
 import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 import 'package:flutter_to_do_app/repository/category_repository.dart';
 
-class AddCategory extends StatelessWidget {
+class AddCategory extends StatefulWidget {
+  final BuildContext context;
   final CategoryFirestoreRepo categoryRepository;
 
-  const AddCategory({Key? key, required this.categoryRepository})
+  const AddCategory(
+      {Key? key, required this.context, required this.categoryRepository})
       : super(key: key);
 
   @override
+  _AddCategoryState createState() => _AddCategoryState();
+}
+
+class _AddCategoryState extends State<AddCategory> {
+  late CategoryFirestoreRepo categoryRepository;
+
+  @override
+  void initState() {
+    super.initState();
+
+    categoryRepository = widget.categoryRepository;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    context = widget.context;
+
     return Container(
         height: 50.0,
         margin: const EdgeInsets.only(left: 10, top: 5, right: 90),
         child: ElevatedButton(
-          onPressed: () => addNewCategory(context),
+          onPressed: () => _showaddNewCategorySheet(context),
           style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -59,7 +77,7 @@ class AddCategory extends StatelessWidget {
         ));
   }
 
-  void addNewCategory(BuildContext context) {
+  void _showaddNewCategorySheet(BuildContext context) {
     final descriptionController = TextEditingController();
 
     showModalBottomSheet(
@@ -101,14 +119,6 @@ class AddCategory extends StatelessWidget {
                                   labelStyle: TextStyle(
                                       color: primaryColor,
                                       fontWeight: FontWeight.w500)),
-                              validator: (String? value) {
-                                if (value!.isEmpty) {
-                                  return 'Empty description!';
-                                }
-                                return value.contains('')
-                                    ? 'Do not use the @ char.'
-                                    : null;
-                              },
                             ),
                           ),
                           Padding(
@@ -144,16 +154,22 @@ class AddCategory extends StatelessWidget {
     final isDuplicate = (await categoryRepository.getCategories())
         .any((category) => category.title == newCategory.title);
 
-    if (newCategory.title.isNotEmpty && !isDuplicate) {
-      categoryRepository.addCategory(newCategory);
-
-      Navigator.pop(context);
-    } else {
-      final title = newCategory.title;
+    if (newCategory.title.isEmpty) {
       Toast(
           context: context,
-          message: 'Category $title already exists!',
+          message: 'Empty description!',
           type: ToastType.warning);
+    } else {
+      if (isDuplicate) {
+        Toast(
+            context: context,
+            message: 'Category already exists!',
+            type: ToastType.warning);
+      } else {
+        await categoryRepository.addCategory(newCategory);
+
+        Navigator.pop(context);
+      }
     }
   }
 }
