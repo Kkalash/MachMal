@@ -1,32 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_to_do_app/shared/models/item.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
-import 'package:flutter_to_do_app/repository/todo_repository.dart';
+import 'package:flutter_to_do_app/repository/item_repository.dart';
 
-class SearchTodo extends StatelessWidget {
+class AddItem extends StatefulWidget {
+  final BuildContext context;
   final String categoryId;
-  final TodoRepository repository;
+  final ItemRepository repository;
 
-  const SearchTodo(
-      {Key? key, required this.categoryId, required this.repository})
+  const AddItem(
+      {Key? key,
+      required this.context,
+      required this.categoryId,
+      required this.repository})
       : super(key: key);
 
   @override
+  _AddItemState createState() => _AddItemState();
+}
+
+class _AddItemState extends State<AddItem> {
+  late String categoryId;
+  late ItemRepository repository;
+
+  @override
+  void initState() {
+    super.initState();
+
+    categoryId = widget.categoryId;
+    repository = widget.repository;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(
-        Icons.search,
-        size: 28,
-        color: primaryColor,
+    context = widget.context;
+
+    return FloatingActionButton(
+      elevation: 5.0,
+      onPressed: () => _showAddItemSheet(context),
+      backgroundColor: primaryColor,
+      child: const Icon(
+        Icons.add,
+        size: 32,
+        color: tertiaryColor,
       ),
-      onPressed: () => _showTodoSearchSheet(context),
     );
   }
 
-  void _showTodoSearchSheet(BuildContext context) {
-    final _todoSearchDescriptionFormController = TextEditingController();
+  void _showAddItemSheet(BuildContext context) {
+    final itemDescriptionController = TextEditingController();
 
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (builder) {
           return Padding(
             padding: EdgeInsets.only(
@@ -51,25 +77,25 @@ class SearchTodo extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                             child: TextFormField(
-                              controller: _todoSearchDescriptionFormController,
+                              controller: itemDescriptionController,
                               textInputAction: TextInputAction.newline,
                               maxLines: 4,
                               style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w400),
+                                  fontSize: 21, fontWeight: FontWeight.w400),
                               autofocus: true,
                               decoration: const InputDecoration(
-                                hintText: 'Search for todo...',
-                                labelText: 'Search *',
-                                labelStyle: TextStyle(
-                                    color: primaryColor,
-                                    fontWeight: FontWeight.w500),
-                              ),
+                                  hintText: 'I have to...',
+                                  labelText: 'New Item',
+                                  labelStyle: TextStyle(
+                                      color: primaryColor,
+                                      fontWeight: FontWeight.w500)),
                               validator: (String? value) {
-                                if (value!.isNotEmpty) {
-                                  return value.contains('@')
-                                      ? 'Do not use the @ char.'
-                                      : null;
+                                if (value!.isEmpty) {
+                                  return 'Empty description!';
                                 }
+                                return value.contains('')
+                                    ? 'Do not use the @ char.'
+                                    : null;
                               },
                             ),
                           ),
@@ -80,17 +106,21 @@ class SearchTodo extends StatelessWidget {
                               radius: 18,
                               child: IconButton(
                                 icon: const Icon(
-                                  Icons.search,
+                                  Icons.save,
                                   size: 22,
                                   color: tertiaryColor,
                                 ),
                                 onPressed: () {
-                                  repository.filterTodos(
-                                      categoryId,
-                                      _todoSearchDescriptionFormController
-                                          .value.text);
+                                  final newItem = Item(
+                                      description: itemDescriptionController
+                                          .value.text
+                                          .trim());
 
-                                  Navigator.pop(context);
+                                  if (newItem.description.isNotEmpty) {
+                                    repository.addItem(categoryId, newItem);
+
+                                    Navigator.pop(context);
+                                  }
                                 },
                               ),
                             ),

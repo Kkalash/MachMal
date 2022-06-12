@@ -16,7 +16,9 @@ import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class Sidenav extends StatefulWidget {
-  const Sidenav({Key? key}) : super(key: key);
+  final BuildContext? context;
+
+  const Sidenav({Key? key, this.context}) : super(key: key);
 
   @override
   _SindnavState createState() => _SindnavState();
@@ -27,6 +29,10 @@ class _SindnavState extends State<Sidenav> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.context != null) {
+      context = widget.context!;
+    }
+
     return Drawer(
       backgroundColor: tertiaryColor,
       child: ListView(
@@ -47,6 +53,7 @@ class _SindnavState extends State<Sidenav> {
             ),
           ),
           AddCategory(
+            context: context,
             categoryRepository: categoryRepository,
           ),
           getCategoriesWidget(),

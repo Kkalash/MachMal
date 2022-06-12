@@ -12,11 +12,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await Hive.initFlutter();
-  runApp(const ToDoApp());
+  runApp(const MachMal());
 }
 
-class ToDoApp extends StatelessWidget {
-  const ToDoApp({Key? key}) : super(key: key);
+class MachMal extends StatelessWidget {
+  const MachMal({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

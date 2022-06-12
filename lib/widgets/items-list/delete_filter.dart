@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_to_do_app/shared/utils/utils.dart';
-import 'package:flutter_to_do_app/repository/todo_repository.dart';
+import 'package:flutter_to_do_app/repository/item_repository.dart';
 
 class DeleteFilter extends StatelessWidget {
   final String categoryId;
-  final TodoRepository repository;
+  final ItemRepository repository;
 
   const DeleteFilter(
       {Key? key, required this.categoryId, required this.repository})
@@ -18,7 +18,7 @@ class DeleteFilter extends StatelessWidget {
         size: 28,
         color: primaryColor,
       ),
-      onPressed: () => repository.getTodosByCategoryId(categoryId),
+      onPressed: () => repository.getItemsByCategoryId(categoryId),
     );
   }
 }
