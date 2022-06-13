@@ -35,8 +35,7 @@ class _SindnavState extends State<Sidenav> {
 
     return Drawer(
       backgroundColor: tertiaryColor,
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
         children: [
           DrawerHeader(
             child: Container(
@@ -56,7 +55,9 @@ class _SindnavState extends State<Sidenav> {
             context: context,
             categoryRepository: categoryRepository,
           ),
-          getCategoriesWidget(),
+          Expanded(
+            child: getCategoriesWidget(),
+          ),
           const Divider(
             color: Colors.black,
             height: 20,
@@ -154,6 +155,8 @@ class _SindnavState extends State<Sidenav> {
 
         final categories = await categoryRepository.getCategories();
         if (categories.isEmpty) {
+          ItemsListPage.currentCategoryId = null;
+
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const Sidenav()));
         } else {
