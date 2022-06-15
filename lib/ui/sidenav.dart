@@ -25,7 +25,7 @@ class Sidenav extends StatefulWidget {
 }
 
 class _SindnavState extends State<Sidenav> {
-  final CategoryFirestoreRepo categoryRepository = CategoryFirestoreRepo();
+  final CategoryRepository categoryRepository = CategoryRepository();
 
   @override
   Widget build(BuildContext context) {

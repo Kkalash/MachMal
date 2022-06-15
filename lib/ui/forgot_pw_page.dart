@@ -78,7 +78,7 @@ class _ForgotPWPageState extends State<ForgotPWPage> {
                       isEmail: true,
                       icon: Icons.email),
                   Button(
-                      text: 'RESET PASSWORD', onPressed: () => resetPassowrd()),
+                      text: 'RESET PASSWORD', onPressed: () => resetPassword()),
                 ],
               ),
             ),
@@ -88,7 +88,7 @@ class _ForgotPWPageState extends State<ForgotPWPage> {
     );
   }
 
-  void resetPassowrd() async {
+  void resetPassword() async {
     bool result = await context.read<AuthenticationService>().resetPassword(
         email: emailController.text.trim().toLowerCase(), context: context);
 

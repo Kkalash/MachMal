@@ -8,7 +8,7 @@ import 'package:flutter_to_do_app/repository/category_repository.dart';
 
 class AddCategory extends StatefulWidget {
   final BuildContext context;
-  final CategoryFirestoreRepo categoryRepository;
+  final CategoryRepository categoryRepository;
 
   const AddCategory(
       {Key? key, required this.context, required this.categoryRepository})
@@ -19,7 +19,7 @@ class AddCategory extends StatefulWidget {
 }
 
 class _AddCategoryState extends State<AddCategory> {
-  late CategoryFirestoreRepo categoryRepository;
+  late CategoryRepository categoryRepository;
 
   @override
   void initState() {

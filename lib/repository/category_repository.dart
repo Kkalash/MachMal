@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_to_do_app/shared/models/category.dart';
 
-class CategoryFirestoreRepo {
+class CategoryRepository {
   final _categoryController = StreamController<List<Category>>.broadcast();
   final CollectionReference collection =
       FirebaseFirestore.instance.collection('categories');
