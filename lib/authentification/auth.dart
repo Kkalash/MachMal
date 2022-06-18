@@ -6,6 +6,9 @@ import 'package:flutter_to_do_app/shared/enums/toast_type.enum.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
+  static String? uid = FirebaseAuth.instance.currentUser?.emailVerified == true
+      ? FirebaseAuth.instance.currentUser?.uid
+      : null;
 
   AuthenticationService(this._firebaseAuth);
 
@@ -23,9 +26,9 @@ class AuthenticationService {
             .signInWithEmailAndPassword(email: email, password: password);
 
         user = credential.user;
+        uid = user?.uid;
       } on FirebaseAuthException catch (e) {
         handelError(e, context);
-
         user = null;
       }
     }
@@ -40,9 +43,9 @@ class AuthenticationService {
       UserCredential credential = await _firebaseAuth.signInAnonymously();
 
       user = credential.user;
+      uid = null;
     } on FirebaseAuthException catch (e) {
       handelError(e, context);
-
       user = null;
     }
 
@@ -63,7 +66,6 @@ class AuthenticationService {
         user = credential.user;
       } on FirebaseAuthException catch (e) {
         handelError(e, context);
-
         user = null;
       }
     }
