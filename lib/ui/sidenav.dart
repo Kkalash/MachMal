@@ -146,7 +146,7 @@ class _SindnavState extends State<Sidenav> {
     Widget continueButton = TextButton(
       child: const Text('Delete'),
       onPressed: () async {
-        categoryRepository.deleteCategory(category.id!);
+        await categoryRepository.deleteCategory(category.id!);
         Navigator.of(context).pop();
         Toast(
             context: context,

@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_to_do_app/authentification/auth.dart';
 
 class Category {
   String? id;
+  String? uid;
   String title;
 
-  Category({this.id, required this.title});
+  Category({this.id, this.uid, required this.title});
 
   factory Category.fromSnapshot(DocumentSnapshot snapshot) {
     final category = Category.fromJson(snapshot.data() as Map<String, dynamic>);
@@ -20,9 +22,12 @@ class Category {
 }
 
 Category _categoryFromJson(Map<String, dynamic> json) {
-  return Category(title: json['title'] as String);
+  return Category(
+      title: json['title'] as String,
+      uid: json['uid'] != null ? (json['uid'] as String) : null);
 }
 
 Map<String, dynamic> _categoryToJson(Category instance) => <String, dynamic>{
       'title': instance.title,
+      'uid': AuthenticationService.uid,
     };
