@@ -87,39 +87,52 @@ class _SindnavState extends State<Sidenav> {
         return const SizedBox(
             height: 100, child: NoData(text: 'Start adding Category...'));
       } else {
-        return ListView.builder(
-            shrinkWrap: true,
-            itemCount: snapshot.data?.length,
-            itemBuilder: (context, index) {
-              Category category = snapshot.data![index];
-              final Widget listTitle = ListTile(
-                title: Text(
-                  category.title,
-                  style: const TextStyle(
-                    fontSize: 20.5,
-                    fontFamily: fontFamilyRaleway,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                trailing: ElevatedButton(
-                  onPressed: () => showAlertDialog(context, category),
-                  child: const Icon(Icons.delete, color: primaryColor),
-                  style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(10),
-                    primary: tertiaryColor,
-                  ),
-                ),
-                onTap: () => Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ItemsListPage(
-                              category: category,
-                            ))),
-              );
+        List<Category> categories = snapshot.data!;
 
-              return listTitle;
+        return ReorderableListView(
+          children: List.generate(categories.length, (index) {
+            return ListTile(
+              key: ValueKey(categories[index].id),
+              horizontalTitleGap: -10.0,
+              leading: const Icon(Icons.menu),
+              title: Text(
+                categories[index].title,
+                style: const TextStyle(
+                  fontSize: 20.5,
+                  fontFamily: fontFamilyRaleway,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              trailing: ElevatedButton(
+                onPressed: () => showAlertDialog(context, categories[index]),
+                child: const Icon(Icons.delete, color: primaryColor),
+                style: ElevatedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(10),
+                  primary: tertiaryColor,
+                ),
+              ),
+              onTap: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ItemsListPage(
+                            category: categories[index],
+                          ))),
+            );
+          }),
+          onReorder: (int oldIndex, int newIndex) {
+            setState(() {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              categories.insert(newIndex, categories.removeAt(oldIndex));
+              for (var category in categories) {
+                category.categoryIndex = categories.indexOf(category);
+                categoryRepository.updateCategory(category);
+              }
             });
+          },
+        );
       }
     } else {
       categoryRepository.getCategories();
