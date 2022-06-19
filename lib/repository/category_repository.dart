@@ -13,14 +13,15 @@ class CategoryRepository {
   Future<List<Category>> getCategories() async {
     final List<Category> maps = [];
 
-    final QuerySnapshot<Object?> querySnapshot;
+    final Query<Object?> query;
     if (AuthenticationService.uid != null) {
-      querySnapshot = await collection
-          .where('uid', isEqualTo: AuthenticationService.uid)
-          .get();
+      query = collection.where('uid', isEqualTo: AuthenticationService.uid);
     } else {
-      querySnapshot = await collection.where('uid', isNull: true).get();
+      query = collection.where('uid', isNull: true);
     }
+
+    final QuerySnapshot<Object?> querySnapshot =
+        await query.orderBy('category_index').get();
 
     for (var doc in querySnapshot.docs) {
       maps.add(Category.fromSnapshot(doc));

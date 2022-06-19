@@ -149,10 +149,11 @@ class _AddCategoryState extends State<AddCategory> {
   }
 
   void addCategory(BuildContext context, String description) async {
-    final newCategory = Category(title: StringUtils.capitalize(description));
-
-    final isDuplicate = (await categoryRepository.getCategories())
-        .any((category) => category.title == newCategory.title);
+    final categories = await categoryRepository.getCategories();
+    final newCategory =
+        Category(title: StringUtils.capitalize(description), categoryIndex: 0);
+    final isDuplicate =
+        categories.any((category) => category.title == newCategory.title);
 
     if (newCategory.title.isEmpty) {
       Toast(
@@ -166,7 +167,12 @@ class _AddCategoryState extends State<AddCategory> {
             message: 'Category already exists!',
             type: ToastType.warning);
       } else {
-        await categoryRepository.addCategory(newCategory);
+        for (var category in categories) {
+          category.categoryIndex = categories.indexOf(category) + 1;
+          categoryRepository.updateCategory(category);
+        }
+
+        categoryRepository.addCategory(newCategory);
 
         Navigator.pop(context);
       }

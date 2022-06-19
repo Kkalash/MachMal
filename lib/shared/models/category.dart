@@ -5,8 +5,10 @@ class Category {
   String? id;
   String? uid;
   String title;
+  int categoryIndex;
 
-  Category({this.id, this.uid, required this.title});
+  Category(
+      {this.id, this.uid, required this.title, required this.categoryIndex});
 
   factory Category.fromSnapshot(DocumentSnapshot snapshot) {
     final category = Category.fromJson(snapshot.data() as Map<String, dynamic>);
@@ -24,10 +26,12 @@ class Category {
 Category _categoryFromJson(Map<String, dynamic> json) {
   return Category(
       title: json['title'] as String,
-      uid: json['uid'] != null ? (json['uid'] as String) : null);
+      uid: json['uid'] != null ? (json['uid'] as String) : null,
+      categoryIndex: json['category_index'] as int);
 }
 
 Map<String, dynamic> _categoryToJson(Category instance) => <String, dynamic>{
       'title': instance.title,
       'uid': AuthenticationService.uid,
+      'category_index': instance.categoryIndex
     };
