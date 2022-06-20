@@ -81,13 +81,16 @@ class AuthenticationService {
     }
   }
 
-  Future<bool> signOut() async {
+  Future<bool> signOut({required BuildContext context}) async {
     bool singedout = false;
 
-    await _firebaseAuth
-        .signOut()
-        .then((value) => singedout = true)
-        .onError((error, stackTrace) => singedout = false);
+    try {
+      await _firebaseAuth.signOut();
+      singedout = true;
+    } on FirebaseAuthException catch (e) {
+      handelError(e, context);
+      singedout = false;
+    }
 
     return singedout;
   }
@@ -96,10 +99,13 @@ class AuthenticationService {
       {required String email, required BuildContext context}) async {
     bool reseted = false;
 
-    await FirebaseAuth.instance
-        .sendPasswordResetEmail(email: email)
-        .then((value) => reseted = true)
-        .onError((error, stackTrace) => reseted = false);
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      reseted = true;
+    } on FirebaseAuthException catch (e) {
+      handelError(e, context);
+      reseted = false;
+    }
 
     return reseted;
   }

@@ -29,7 +29,9 @@ class SignOut extends StatelessWidget {
           ),
         ),
         onTap: () async {
-          var singOut = await context.read<AuthenticationService>().signOut();
+          var singOut = await context
+              .read<AuthenticationService>()
+              .signOut(context: context);
 
           if (singOut) {
             Navigator.pushReplacement(context,
